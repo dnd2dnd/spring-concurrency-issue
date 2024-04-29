@@ -38,4 +38,10 @@ public class MemberPassword {
 			throw new IllegalArgumentException(PASSWORD_FORMAT_INVALID);
 		}
 	}
+
+	public void validPassword(String rawPassword, PasswordEncoder passwordEncoder) {
+		if(!passwordEncoder.matches(rawPassword, this.password)) {
+			throw new IllegalArgumentException(PASSWORD_FORMAT_INVALID);
+		}
+	}
 }

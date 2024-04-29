@@ -1,5 +1,7 @@
 package com.project.member.domain;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -40,4 +42,9 @@ public class Member {
 			password
 		);
 	}
+
+	public void validPassword(String rawPassword, PasswordEncoder passwordEncoder) {
+		password.validPassword(rawPassword, passwordEncoder);
+	}
+
 }

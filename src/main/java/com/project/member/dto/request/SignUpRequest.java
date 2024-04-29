@@ -1,4 +1,4 @@
-package com.project.member.dto;
+package com.project.member.dto.request;
 
 import static com.project.member.MemberConstant.*;
 
