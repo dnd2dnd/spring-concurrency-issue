@@ -8,10 +8,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.project.auth.service.AuthService;
 import com.project.member.dto.request.SignInRequest;
 import com.project.member.dto.request.SignUpRequest;
 import com.project.member.dto.response.TokenResponse;
-import com.project.auth.service.AuthService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

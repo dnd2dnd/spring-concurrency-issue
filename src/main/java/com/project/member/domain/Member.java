@@ -21,7 +21,7 @@ public class Member {
 	private Long id;
 
 	@Column(unique = true)
-	private String email;
+	private Email email;
 
 	@Embedded
 	private Nickname nickname;
@@ -29,18 +29,30 @@ public class Member {
 	@Embedded
 	private Password password;
 
-	private Member(String email, Nickname nickname, Password password) {
+	private Member(Email email, Nickname nickname, Password password) {
 		this.email = email;
 		this.nickname = nickname;
 		this.password = password;
 	}
 
-	public static Member of(String email, Nickname nickname, Password password) {
+	public static Member of(String email, String nickname, String password, PasswordEncoder passwordEncoder) {
 		return new Member(
-			email,
-			nickname,
-			password
+			Email.from(email),
+			Nickname.from(nickname),
+			Password.of(password, passwordEncoder)
 		);
+	}
+
+	public String getEmail() {
+		return this.email.getEmail();
+	}
+
+	public String getNickname() {
+		return this.nickname.getNickname();
+	}
+
+	public String getPassword() {
+		return password.getPassword();
 	}
 
 	public void checkPassword(String rawPassword, PasswordEncoder passwordEncoder) {

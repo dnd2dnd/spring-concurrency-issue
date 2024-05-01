@@ -10,7 +10,6 @@ import com.project.auth.JWTProvider;
 import com.project.common.BusinessException;
 import com.project.member.domain.Member;
 import com.project.member.domain.Nickname;
-import com.project.member.domain.Password;
 import com.project.member.dto.request.SignInRequest;
 import com.project.member.dto.request.SignUpRequest;
 import com.project.member.dto.response.TokenResponse;
@@ -41,8 +40,9 @@ public class AuthService {
 	public Member toMember(SignUpRequest signUpRequest) {
 		return Member.of(
 			signUpRequest.email(),
-			Nickname.from(signUpRequest.nickname()),
-			Password.of(signUpRequest.password(), passwordEncoder)
+			signUpRequest.nickname(),
+			signUpRequest.password(),
+			passwordEncoder
 		);
 	}
 
