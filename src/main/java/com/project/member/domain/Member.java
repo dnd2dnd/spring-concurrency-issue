@@ -20,22 +20,22 @@ public class Member {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column
+	@Column(unique = true)
 	private String email;
 
 	@Embedded
-	private MemberNickname nickname;
+	private Nickname nickname;
 
-	@Column
-	private MemberPassword password;
+	@Embedded
+	private Password password;
 
-	private Member(String email, MemberNickname nickname, MemberPassword password) {
+	private Member(String email, Nickname nickname, Password password) {
 		this.email = email;
 		this.nickname = nickname;
 		this.password = password;
 	}
 
-	public static Member of(String email, MemberNickname nickname, MemberPassword password) {
+	public static Member of(String email, Nickname nickname, Password password) {
 		return new Member(
 			email,
 			nickname,
@@ -43,8 +43,8 @@ public class Member {
 		);
 	}
 
-	public void validPassword(String rawPassword, PasswordEncoder passwordEncoder) {
-		password.validPassword(rawPassword, passwordEncoder);
+	public void checkPassword(String rawPassword, PasswordEncoder passwordEncoder) {
+		password.checkPassword(rawPassword, passwordEncoder);
 	}
 
 }

@@ -2,15 +2,13 @@ package com.project.member.dto.request;
 
 import static com.project.member.MemberConstant.*;
 
-import com.project.member.domain.MemberNickname;
-import com.project.member.domain.MemberPassword;
+import com.project.member.domain.Password;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
 
 public record SignInRequest(
 	@Schema(description = "이메일", example = "test@naver.com")
@@ -20,7 +18,7 @@ public record SignInRequest(
 
 	@Schema(description = "비밀번호", example = "test123!@#$")
 	@NotNull(message = PASSWORD_NOT_NULL)
-	@Pattern(regexp = MemberPassword.PASSWORD_REGEX, message = PASSWORD_FORMAT_INVALID)
+	@Pattern(regexp = Password.PASSWORD_REGEX, message = PASSWORD_FORMAT_INVALID)
 	String password
 ) {
 }

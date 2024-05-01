@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 import com.project.auth.JWTProvider;
 import com.project.common.BusinessException;
 import com.project.member.domain.Member;
-import com.project.member.domain.MemberNickname;
-import com.project.member.domain.MemberPassword;
+import com.project.member.domain.Nickname;
+import com.project.member.domain.Password;
 import com.project.member.dto.request.SignInRequest;
 import com.project.member.dto.request.SignUpRequest;
 import com.project.member.dto.response.TokenResponse;
@@ -41,13 +41,13 @@ public class AuthService {
 	public Member toMember(SignUpRequest signUpRequest) {
 		return Member.of(
 			signUpRequest.email(),
-			MemberNickname.from(signUpRequest.nickname()),
-			MemberPassword.of(signUpRequest.password(), passwordEncoder)
+			Nickname.from(signUpRequest.nickname()),
+			Password.of(signUpRequest.password(), passwordEncoder)
 		);
 	}
 
 	public void validateDuplicatedNickName(String nickname) {
-		if (memberRepository.existsByNickname(MemberNickname.from(nickname))) {
+		if (memberRepository.existsByNickname(Nickname.from(nickname))) {
 			throw new BusinessException(NICKNAME_DUPLICATED);
 		}
 	}
@@ -56,7 +56,7 @@ public class AuthService {
 		Member member = memberRepository.findByEmail(signInRequest.email())
 			.orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, EMAIL_NOT_FOUND));
 
-		member.validPassword(signInRequest.password(), passwordEncoder);
+		member.checkPassword(signInRequest.password(), passwordEncoder);
 
 		return jwtProvider.createAccessToken(member.getId());
 	}

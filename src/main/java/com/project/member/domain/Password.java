@@ -15,22 +15,33 @@ import lombok.NoArgsConstructor;
 @Embeddable
 @Getter
 @NoArgsConstructor(access = PROTECTED)
-public class MemberPassword {
+public class Password {
+	private static final int PASSWORD_LENGTH_LOWER_BOUND_INCLUSIVE = 8;
+	private static final int PASSWORD_LENGTH_UPPER_BOUND_INCLUSIVE = 20;
 
-	public static final String PASSWORD_REGEX = "^[a-zA-Z0-9!@#$]*$";
+	public static final String PASSWORD_REGEX = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$])[a-zA-Z!@#$]+$";
 	private static final Pattern PASSWORD_PATTERN = Pattern.compile(PASSWORD_REGEX);
 
 	@Column(nullable = false, length = 200)
 	private String password;
 
-	private MemberPassword(String password) {
+	private Password(String password) {
 		this.password = password;
 	}
 
-	public static MemberPassword of(String password, PasswordEncoder passwordEncoder) {
+	public static Password of(String password, PasswordEncoder passwordEncoder) {
+		validateLength(password);
 		validatePattern(password);
 		String encoded = passwordEncoder.encode(password);
-		return new MemberPassword(encoded);
+		return new Password(encoded);
+	}
+
+	private static void validateLength(String password) {
+		if (PASSWORD_LENGTH_LOWER_BOUND_INCLUSIVE <= password.length()
+			&& password.length() <= PASSWORD_LENGTH_UPPER_BOUND_INCLUSIVE) {
+			return;
+		}
+		throw new IllegalArgumentException(PASSWORD_LENGTH_INVALID);
 	}
 
 	private static void validatePattern(String password) {
@@ -39,7 +50,7 @@ public class MemberPassword {
 		}
 	}
 
-	public void validPassword(String rawPassword, PasswordEncoder passwordEncoder) {
+	public void checkPassword(String rawPassword, PasswordEncoder passwordEncoder) {
 		if(!passwordEncoder.matches(rawPassword, this.password)) {
 			throw new IllegalArgumentException(PASSWORD_FORMAT_INVALID);
 		}

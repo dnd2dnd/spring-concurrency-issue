@@ -2,8 +2,8 @@ package com.project.member.dto.request;
 
 import static com.project.member.MemberConstant.*;
 
-import com.project.member.domain.MemberNickname;
-import com.project.member.domain.MemberPassword;
+import com.project.member.domain.Nickname;
+import com.project.member.domain.Password;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
@@ -22,12 +22,12 @@ public record SignUpRequest(
 	@Schema(description = "닉네임", example = "닉네임")
 	@NotNull(message = NICKNAME_NOT_NULL)
 	@Size(min = 2, max = 10, message = NICKNAME_LENGTH_INVALID)
-	@Pattern(regexp = MemberNickname.NICKNAME_REGEX, message = NICKNAME_FORMAT_INVALID)
+	@Pattern(regexp = Nickname.NICKNAME_REGEX, message = NICKNAME_FORMAT_INVALID)
 	String nickname,
 
 	@Schema(description = "비밀번호", example = "test123!@#$")
 	@NotNull(message = PASSWORD_NOT_NULL)
-	@Pattern(regexp = MemberPassword.PASSWORD_REGEX, message = PASSWORD_FORMAT_INVALID)
+	@Pattern(regexp = Password.PASSWORD_REGEX, message = PASSWORD_FORMAT_INVALID)
 	String password
 
 ) {

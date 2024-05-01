@@ -15,6 +15,8 @@ public class MemberConstant {
 	public static final String NICKNAME_FORMAT_INVALID = "닉네임 형식이 올바르지 않습니다.";
 	public static final String NICKNAME_DUPLICATED = "이미 사용중인 닉네임 입니다";
 
+
+	public static final String PASSWORD_LENGTH_INVALID = "비밀번호는 8글자에서 20글자 사이어야 합니다.";
 	public static final String PASSWORD_NOT_NULL = "비밀번호는 빈 값일 수 없습니다.";
 	public static final String PASSWORD_FORMAT_INVALID = "비밀번호 형식이 올바르지 않습니다.";
 
