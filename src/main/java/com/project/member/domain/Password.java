@@ -19,7 +19,7 @@ public class Password {
 	private static final int PASSWORD_LENGTH_LOWER_BOUND_INCLUSIVE = 8;
 	private static final int PASSWORD_LENGTH_UPPER_BOUND_INCLUSIVE = 20;
 
-	public static final String PASSWORD_REGEX = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$])[a-zA-Z!@#$]+$";
+	public static final String PASSWORD_REGEX = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$])(?=.*[0-9]).*$";
 	private static final Pattern PASSWORD_PATTERN = Pattern.compile(PASSWORD_REGEX);
 
 	@Column(nullable = false, length = 200)
@@ -51,7 +51,7 @@ public class Password {
 	}
 
 	public void checkPassword(String rawPassword, PasswordEncoder passwordEncoder) {
-		if(!passwordEncoder.matches(rawPassword, this.password)) {
+		if (!passwordEncoder.matches(rawPassword, this.password)) {
 			throw new IllegalArgumentException(PASSWORD_FORMAT_INVALID);
 		}
 	}

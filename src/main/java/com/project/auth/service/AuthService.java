@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.project.auth.JWTProvider;
 import com.project.common.BusinessException;
+import com.project.member.domain.Email;
 import com.project.member.domain.Member;
 import com.project.member.domain.Nickname;
 import com.project.member.dto.request.SignInRequest;
@@ -53,7 +54,7 @@ public class AuthService {
 	}
 
 	public TokenResponse signIn(SignInRequest signInRequest) {
-		Member member = memberRepository.findByEmail(signInRequest.email())
+		Member member = memberRepository.findByEmail(Email.from(signInRequest.email()))
 			.orElseThrow(() -> new BusinessException(HttpStatus.NOT_FOUND, EMAIL_NOT_FOUND));
 
 		member.checkPassword(signInRequest.password(), passwordEncoder);
