@@ -45,4 +45,10 @@ public class ProductService {
 
 		return product.getId();
 	}
+
+	public void deleteProduct(Long productId) {
+		Product product = productRepository.getById(productId);
+		// TODO 판매자만 삭제할 수 있도록 로직 추가 해야함
+		productRepository.deleteById(product.getId());
+	}
 }
