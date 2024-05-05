@@ -9,7 +9,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.PositiveOrZero;
 
-public record ProductCreateRequest(
+public record ProductRequest(
 	@Schema(description = "상품명", example = "당근")
 	@NotBlank(message = NAME_NOT_NULL)
 	String name,

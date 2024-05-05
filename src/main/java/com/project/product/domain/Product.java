@@ -54,4 +54,18 @@ public class Product {
 			category
 		);
 	}
+
+	public void updateProduct(
+		String name,
+		Integer price,
+		Integer amount,
+		String desc,
+		ProductCategory category
+	) {
+		this.name = name;
+		this.price = Price.from(price);
+		this.amount = Amount.from(amount);
+		this.desc = desc;
+		this.category = category;
+	}
 }
