@@ -3,13 +3,16 @@ package com.project.product.dto.response;
 import com.project.product.domain.Amount;
 import com.project.product.domain.Price;
 import com.project.product.domain.Product;
+import com.project.product.domain.ProductCategory;
 
 public record ProductResponse(
 	Long productId,
 	String name,
 	Price price,
 	Amount amount,
-	String desc
+	Integer sales,
+	String desc,
+	ProductCategory category
 ) {
 	public static ProductResponse from(Product product) {
 		return new ProductResponse(
@@ -17,7 +20,9 @@ public record ProductResponse(
 			product.getName(),
 			product.getPrice(),
 			product.getAmount(),
-			product.getDesc()
+			product.getSales(),
+			product.getDesc(),
+			product.getCategory()
 		);
 	}
 }

@@ -1,12 +1,17 @@
 package com.project.product.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.project.product.domain.Product;
+import com.project.product.domain.ProductCategory;
+import com.project.product.domain.ProductOrder;
 import com.project.product.dto.request.ProductRequest;
 import com.project.product.dto.response.ProductResponse;
 import com.project.product.repository.ProductRepository;
+import com.querydsl.core.types.Order;
 
 import lombok.RequiredArgsConstructor;
 
@@ -26,6 +31,12 @@ public class ProductService {
 		);
 
 		return productRepository.save(product).getId();
+	}
+
+	@Transactional(readOnly = true)
+	public List<ProductResponse> getProducts(ProductCategory category, ProductOrder productOrder, Order order,
+		String search) {
+		return productRepository.findAllBySearch(category, productOrder, order, search);
 	}
 
 	@Transactional(readOnly = true)

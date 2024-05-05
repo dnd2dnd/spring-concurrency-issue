@@ -30,6 +30,8 @@ public class Product {
 	@Embedded
 	private Amount amount;
 
+	private Integer sales;
+
 	private String desc;
 
 	private ProductCategory category;
@@ -37,19 +39,22 @@ public class Product {
 	@OneToMany(mappedBy = "product")
 	private final List<ProductImage> productImage = new ArrayList<>();
 
-	private Product(String name, Price price, Amount amount, String desc, ProductCategory category) {
+	private Product(String name, Price price, Amount amount, Integer sales, String desc, ProductCategory category) {
 		this.name = name;
 		this.price = price;
 		this.amount = amount;
+		this.sales = sales;
 		this.desc = desc;
 		this.category = category;
 	}
 
-	public static Product of(String name, Integer price, Integer amount, String desc, ProductCategory category) {
+	public static Product of(String name, Integer price, Integer amount, String desc,
+		ProductCategory category) {
 		return new Product(
 			name,
 			Price.from(price),
 			Amount.from(amount),
+			0,
 			desc,
 			category
 		);
@@ -67,5 +72,9 @@ public class Product {
 		this.amount = Amount.from(amount);
 		this.desc = desc;
 		this.category = category;
+	}
+
+	public void increaseSales() {
+		this.sales += 1;
 	}
 }
