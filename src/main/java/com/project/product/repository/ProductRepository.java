@@ -7,4 +7,10 @@ import com.project.product.domain.Product;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
+
+	default Product getById(Long productId) {
+		return findById(productId).orElseThrow(
+			() -> new IllegalArgumentException("Not Found ID : " + productId));
+	}
+	
 }
