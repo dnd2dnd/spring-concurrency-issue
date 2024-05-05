@@ -5,6 +5,8 @@ import java.util.List;
 
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -34,12 +36,17 @@ public class Product {
 
 	private String desc;
 
+	@Enumerated(EnumType.STRING)
 	private ProductCategory category;
+
+	@Enumerated(EnumType.STRING)
+	private ProductStatus status;
 
 	@OneToMany(mappedBy = "product")
 	private final List<ProductImage> productImage = new ArrayList<>();
 
-	private Product(String name, Price price, Amount amount, Integer sales, String desc, ProductCategory category) {
+	private Product(String name, Price price, Amount amount, Integer sales, String desc, ProductCategory category,
+		ProductStatus status) {
 		this.name = name;
 		this.price = price;
 		this.amount = amount;
@@ -48,15 +55,16 @@ public class Product {
 		this.category = category;
 	}
 
-	public static Product of(String name, Integer price, Integer amount, String desc,
-		ProductCategory category) {
+	public static Product of(String name, Integer price, Integer amount, String desc, ProductCategory category,
+		ProductStatus status) {
 		return new Product(
 			name,
 			Price.from(price),
 			Amount.from(amount),
 			0,
 			desc,
-			category
+			category,
+			status
 		);
 	}
 
@@ -65,13 +73,15 @@ public class Product {
 		Integer price,
 		Integer amount,
 		String desc,
-		ProductCategory category
+		ProductCategory category,
+		ProductStatus status
 	) {
 		this.name = name;
 		this.price = Price.from(price);
 		this.amount = Amount.from(amount);
 		this.desc = desc;
 		this.category = category;
+		this.status = status;
 	}
 
 	public void increaseSales() {

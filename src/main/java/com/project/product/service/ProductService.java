@@ -27,7 +27,8 @@ public class ProductService {
 			productRequest.price(),
 			productRequest.amount(),
 			productRequest.desc(),
-			productRequest.category()
+			productRequest.category(),
+			productRequest.status()
 		);
 
 		return productRepository.save(product).getId();
@@ -51,7 +52,8 @@ public class ProductService {
 			productRequest.price(),
 			productRequest.amount(),
 			productRequest.desc(),
-			productRequest.category()
+			productRequest.category(),
+			productRequest.status()
 		);
 
 		return product.getId();

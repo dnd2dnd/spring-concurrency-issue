@@ -3,6 +3,7 @@ package com.project.product.dto.request;
 import static com.project.product.ProductConstant.*;
 
 import com.project.product.domain.ProductCategory;
+import com.project.product.domain.ProductStatus;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Min;
@@ -27,6 +28,9 @@ public record ProductRequest(
 	String desc,
 
 	@Schema(description = "카테고리", example = "FRESH")
-	ProductCategory category
+	ProductCategory category,
+
+	@Schema(description = "상태", example = "SELL")
+	ProductStatus status
 ) {
 }
