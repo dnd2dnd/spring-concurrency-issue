@@ -8,11 +8,13 @@ import org.springframework.transaction.annotation.Transactional;
 import com.project.product.domain.Product;
 import com.project.product.domain.ProductCategory;
 import com.project.product.domain.ProductOrder;
-import com.project.product.dto.request.ProductRequest;
+import com.project.product.dto.request.ProductCreateRequest;
+import com.project.product.dto.request.ProductUpdateRequest;
 import com.project.product.dto.response.ProductResponse;
 import com.project.product.repository.ProductRepository;
 import com.querydsl.core.types.Order;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -21,14 +23,13 @@ import lombok.RequiredArgsConstructor;
 public class ProductService {
 	private final ProductRepository productRepository;
 
-	public Long createProduct(ProductRequest productRequest) {
+	public Long createProduct(@Valid ProductCreateRequest productCreateRequest) {
 		Product product = Product.of(
-			productRequest.name(),
-			productRequest.price(),
-			productRequest.amount(),
-			productRequest.desc(),
-			productRequest.category(),
-			productRequest.status()
+			productCreateRequest.name(),
+			productCreateRequest.price(),
+			productCreateRequest.amount(),
+			productCreateRequest.description(),
+			productCreateRequest.category()
 		);
 
 		return productRepository.save(product).getId();
@@ -45,15 +46,15 @@ public class ProductService {
 		return ProductResponse.from(productRepository.getById(productId));
 	}
 
-	public Long updateProduct(Long productId, ProductRequest productRequest) {
+	public Long updateProduct(Long productId, ProductUpdateRequest productUpdateRequest) {
 		Product product = productRepository.getById(productId);
 		product.updateProduct(
-			productRequest.name(),
-			productRequest.price(),
-			productRequest.amount(),
-			productRequest.desc(),
-			productRequest.category(),
-			productRequest.status()
+			productUpdateRequest.name(),
+			productUpdateRequest.price(),
+			productUpdateRequest.amount(),
+			productUpdateRequest.description(),
+			productUpdateRequest.category(),
+			productUpdateRequest.status()
 		);
 
 		return product.getId();

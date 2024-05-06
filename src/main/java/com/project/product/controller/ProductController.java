@@ -17,7 +17,8 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.project.product.domain.ProductCategory;
 import com.project.product.domain.ProductOrder;
-import com.project.product.dto.request.ProductRequest;
+import com.project.product.dto.request.ProductCreateRequest;
+import com.project.product.dto.request.ProductUpdateRequest;
 import com.project.product.dto.response.ProductResponse;
 import com.project.product.service.ProductService;
 import com.querydsl.core.types.Order;
@@ -33,8 +34,8 @@ public class ProductController {
 	private final ProductService productService;
 
 	@PostMapping
-	public ResponseEntity<Void> createProduct(@Valid @RequestBody ProductRequest productRequest) {
-		Long id = productService.createProduct(productRequest);
+	public ResponseEntity<Void> createProduct(@Valid @RequestBody ProductCreateRequest productCreateRequest) {
+		Long id = productService.createProduct(productCreateRequest);
 		URI uri = ServletUriComponentsBuilder.fromCurrentContextPath()
 			.path("/{id}")
 			.buildAndExpand(id).toUri();
@@ -63,9 +64,9 @@ public class ProductController {
 	@PutMapping("/{productId}")
 	public ResponseEntity<Void> updateProduct(
 		@PathVariable Long productId,
-		@Valid @RequestBody ProductRequest productRequest
+		@Valid @RequestBody ProductUpdateRequest productUpdateRequest
 	) {
-		Long id = productService.updateProduct(productId, productRequest);
+		Long id = productService.updateProduct(productId, productUpdateRequest);
 		URI uri = ServletUriComponentsBuilder.fromCurrentContextPath()
 			.path("/{id}")
 			.buildAndExpand(id).toUri();

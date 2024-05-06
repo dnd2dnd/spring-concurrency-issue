@@ -3,14 +3,13 @@ package com.project.product.dto.request;
 import static com.project.product.ProductConstant.*;
 
 import com.project.product.domain.ProductCategory;
-import com.project.product.domain.ProductStatus;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.PositiveOrZero;
 
-public record ProductRequest(
+public record ProductCreateRequest(
 	@Schema(description = "상품명", example = "당근")
 	@NotBlank(message = NAME_NOT_NULL)
 	String name,
@@ -25,12 +24,9 @@ public record ProductRequest(
 	Integer amount,
 
 	@Schema(description = "설명", example = "신선하고 맛있는 바니바니 당근 당근~")
-	String desc,
+	String description,
 
 	@Schema(description = "카테고리", example = "FRESH")
-	ProductCategory category,
-
-	@Schema(description = "상태", example = "SELL")
-	ProductStatus status
+	ProductCategory category
 ) {
 }

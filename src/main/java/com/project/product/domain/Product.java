@@ -3,6 +3,7 @@ package com.project.product.domain;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -24,6 +25,7 @@ public class Product {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
+	@Column
 	private String name;
 
 	@Embedded
@@ -32,9 +34,11 @@ public class Product {
 	@Embedded
 	private Amount amount;
 
+	@Column
 	private Integer sales;
 
-	private String desc;
+	@Column
+	private String description;
 
 	@Enumerated(EnumType.STRING)
 	private ProductCategory category;
@@ -45,41 +49,49 @@ public class Product {
 	@OneToMany(mappedBy = "product")
 	private final List<ProductImage> productImage = new ArrayList<>();
 
-	private Product(String name, Price price, Amount amount, Integer sales, String desc, ProductCategory category,
-		ProductStatus status) {
+	private Product(String name, Price price, Amount amount, Integer sales, String description,
+		ProductCategory category, ProductStatus status) {
 		this.name = name;
 		this.price = price;
 		this.amount = amount;
 		this.sales = sales;
-		this.desc = desc;
+		this.description = description;
 		this.category = category;
+		this.status = status;
 	}
 
-	public static Product of(String name, Integer price, Integer amount, String desc, ProductCategory category,
-		ProductStatus status) {
+	public static Product of(String name, Integer price, Integer amount, String description, ProductCategory category) {
 		return new Product(
 			name,
 			Price.from(price),
 			Amount.from(amount),
 			0,
-			desc,
+			description,
 			category,
-			status
+			ProductStatus.SELL
 		);
+	}
+
+	public Integer getPrice() {
+		return price.getPrice();
+	}
+
+	public Integer getAmount() {
+		return amount.getAmount();
 	}
 
 	public void updateProduct(
 		String name,
 		Integer price,
 		Integer amount,
-		String desc,
+		String description,
 		ProductCategory category,
 		ProductStatus status
 	) {
 		this.name = name;
 		this.price = Price.from(price);
 		this.amount = Amount.from(amount);
-		this.desc = desc;
+		this.description = description;
 		this.category = category;
 		this.status = status;
 	}
