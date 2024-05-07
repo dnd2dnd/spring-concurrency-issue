@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.project.auth.service.AuthService;
 import com.project.member.dto.request.SignInRequest;
 import com.project.member.dto.response.TokenResponse;
 import com.project.seller.dto.request.SellerSignUpReuqest;
+import com.project.seller.service.SellerService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,10 +21,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @RequestMapping("/register-seller")
 public class SellerController {
-	private final AuthService authService;
+	private final SellerService sellerService;
 	@PostMapping("sign-up")
 	public ResponseEntity<Void> signUp(@Valid @RequestBody SellerSignUpReuqest signUpRequest) {
-		Long id = authService.SellerSignUp(signUpRequest);
+		Long id = sellerService.SellerSignUp(signUpRequest);
 		URI uri = ServletUriComponentsBuilder.fromCurrentContextPath()
 			.path("/{id}")
 			.buildAndExpand(id).toUri();
@@ -34,7 +34,7 @@ public class SellerController {
 
 	@PostMapping("sign-in")
 	public ResponseEntity<TokenResponse> signIn(@Valid @RequestBody SignInRequest signInRequest) {
-		TokenResponse response = authService.SellerSignIn(signInRequest);
+		TokenResponse response = sellerService.signIn(signInRequest);
 		return ResponseEntity.ok(response);
 	}
 }

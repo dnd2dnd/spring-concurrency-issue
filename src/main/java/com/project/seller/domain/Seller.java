@@ -2,8 +2,8 @@ package com.project.seller.domain;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.project.auth.domain.BaseAuth;
 import com.project.member.domain.Email;
-import com.project.member.domain.Nickname;
 import com.project.member.domain.Password;
 
 import jakarta.persistence.Column;
@@ -28,35 +28,30 @@ import lombok.NoArgsConstructor;
  * */
 @Entity
 @Getter
+// @Inheritance(strategy = InheritanceType.JOINED)
+// @DiscriminatorColumn
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Seller {
+public  class Seller extends BaseAuth {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-
-	@Column(unique = true)
-	private Email email;
-
-	@Embedded
-	private Password password;
 	@Embedded
 	private TaxpayerIdentificationNum taxpayerIdentificationNum;
 
 	@Column
-	private String BusinessLocation;
+	private String businessLocation;
 
 	@Column
-	private String CompanyName;
+	private String companyName;
 
 	@Column
 	private boolean isWithdrawn;
 
 	private Seller(Email email, Password password,String businessLocation,String companyName,
 		TaxpayerIdentificationNum taxpayerIdentificationNum) {
-		this.email = email;
-		this.password = password;
-		this.BusinessLocation=businessLocation;
-		this.CompanyName=companyName;
+		super(email,password);
+		this.businessLocation=businessLocation;
+		this.companyName=companyName;
 		this.taxpayerIdentificationNum=taxpayerIdentificationNum;
 	}
 
@@ -69,10 +64,6 @@ public class Seller {
 			companyName,
 			TaxpayerIdentificationNum.from(taxpayerIdentificationNum)
 		);
-	}
-	//TODO 일반 회원과 겹치는 로직이므로 공통 로직으로 빼야 함
-	public void checkPassword(String rawPassword, PasswordEncoder passwordEncoder) {
-		password.checkPassword(rawPassword, passwordEncoder);
 	}
 
 }

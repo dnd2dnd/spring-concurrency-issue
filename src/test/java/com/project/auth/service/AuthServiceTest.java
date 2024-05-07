@@ -37,7 +37,7 @@ class AuthServiceTest {
 	private PasswordEncoder passwordEncoder;
 
 	@Autowired
-	private AuthService authService;
+	private AuthServicess authService;
 
 	@Autowired
 	private MemberRepository memberRepository;
