@@ -25,16 +25,17 @@ import lombok.NoArgsConstructor;
  * - 업체명 ,String , NN
  * - 업체주소, String , NN
  * - 탈퇴 여부
- * */
+ */
 @Entity
 @Getter
 // @Inheritance(strategy = InheritanceType.JOINED)
 // @DiscriminatorColumn
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public  class Seller extends BaseAuth {
+public class Seller extends BaseAuth {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+
 	@Embedded
 	private TaxpayerIdentificationNum taxpayerIdentificationNum;
 
@@ -47,16 +48,16 @@ public  class Seller extends BaseAuth {
 	@Column
 	private boolean isWithdrawn;
 
-	private Seller(Email email, Password password,String businessLocation,String companyName,
+	private Seller(Email email, Password password, String businessLocation, String companyName,
 		TaxpayerIdentificationNum taxpayerIdentificationNum) {
-		super(email,password);
-		this.businessLocation=businessLocation;
-		this.companyName=companyName;
-		this.taxpayerIdentificationNum=taxpayerIdentificationNum;
+		super(email, password);
+		this.businessLocation = businessLocation;
+		this.companyName = companyName;
+		this.taxpayerIdentificationNum = taxpayerIdentificationNum;
 	}
 
 	public static Seller of(String email, String password, PasswordEncoder passwordEncoder,
-		String businessLocation,String companyName,String taxpayerIdentificationNum ) {
+		String businessLocation, String companyName, String taxpayerIdentificationNum) {
 		return new Seller(
 			Email.from(email),
 			Password.of(password, passwordEncoder),
@@ -66,4 +67,7 @@ public  class Seller extends BaseAuth {
 		);
 	}
 
+	public Long getId() {
+		return id;
+	}
 }

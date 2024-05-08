@@ -28,6 +28,7 @@ public class Member extends BaseAuth {
 		super(email, password);
 		this.nickname = nickname;
 	}
+
 	public static Member of(String email, String nickname, String password, PasswordEncoder passwordEncoder) {
 		return new Member(
 			Email.from(email),
