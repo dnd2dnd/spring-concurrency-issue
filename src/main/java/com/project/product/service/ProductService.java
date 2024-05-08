@@ -12,6 +12,8 @@ import com.project.product.dto.request.ProductCreateRequest;
 import com.project.product.dto.request.ProductUpdateRequest;
 import com.project.product.dto.response.ProductResponse;
 import com.project.product.repository.ProductRepository;
+import com.project.seller.domain.Seller;
+import com.project.seller.repository.SellerRepository;
 import com.querydsl.core.types.Order;
 
 import jakarta.validation.Valid;
@@ -22,14 +24,17 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ProductService {
 	private final ProductRepository productRepository;
+	private final SellerRepository sellerRepository;
 
 	public Long createProduct(@Valid ProductCreateRequest productCreateRequest) {
+		Seller seller = sellerRepository.getById(productCreateRequest.sellerId());
 		Product product = Product.of(
 			productCreateRequest.name(),
 			productCreateRequest.price(),
 			productCreateRequest.amount(),
 			productCreateRequest.description(),
-			productCreateRequest.category()
+			productCreateRequest.category(),
+			seller
 		);
 
 		return productRepository.save(product).getId();
@@ -47,7 +52,8 @@ public class ProductService {
 	}
 
 	public Long updateProduct(Long productId, ProductUpdateRequest productUpdateRequest) {
-		Product product = productRepository.getById(productId);
+		Seller seller = sellerRepository.getById(productUpdateRequest.sellerId());
+		Product product = productRepository.findByIdAndSeller(productId, seller);
 		product.updateProduct(
 			productUpdateRequest.name(),
 			productUpdateRequest.price(),
@@ -60,9 +66,9 @@ public class ProductService {
 		return product.getId();
 	}
 
-	public void deleteProduct(Long productId) {
-		Product product = productRepository.getById(productId);
-		// TODO 판매자만 삭제할 수 있도록 로직 추가 해야함
+	public void deleteProduct(Long productId, Long sellerId) {
+		Seller seller = sellerRepository.getById(sellerId);
+		Product product = productRepository.findByIdAndSeller(productId, seller);
 		productRepository.deleteById(product.getId());
 	}
 }

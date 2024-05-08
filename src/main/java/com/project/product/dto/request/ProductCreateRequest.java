@@ -27,6 +27,9 @@ public record ProductCreateRequest(
 	String description,
 
 	@Schema(description = "카테고리", example = "FRESH")
-	ProductCategory category
+	ProductCategory category,
+
+	@Schema(description = "판매자 아이디", example = "1")
+	Long sellerId
 ) {
 }

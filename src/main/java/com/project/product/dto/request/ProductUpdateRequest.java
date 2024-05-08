@@ -31,6 +31,9 @@ public record ProductUpdateRequest(
 	ProductCategory category,
 
 	@Schema(description = "상태", example = "SELL")
-	ProductStatus status
+	ProductStatus status,
+
+	@Schema(description = "판매자 아이디", example = "1")
+	Long sellerId
 ) {
 }
