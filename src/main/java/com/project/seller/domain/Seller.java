@@ -28,8 +28,6 @@ import lombok.NoArgsConstructor;
  */
 @Entity
 @Getter
-// @Inheritance(strategy = InheritanceType.JOINED)
-// @DiscriminatorColumn
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Seller extends BaseAuth {
 	@Id
@@ -65,9 +63,5 @@ public class Seller extends BaseAuth {
 			companyName,
 			TaxpayerIdentificationNum.from(taxpayerIdentificationNum)
 		);
-	}
-
-	public Long getId() {
-		return id;
 	}
 }
