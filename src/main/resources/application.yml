@@ -15,9 +15,13 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: create
-#  sql:
-#    init:
-#      mode: always
+  #  sql:
+  #    init:
+  #      mode: always
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
 
 jwt:
   secret-key: ${JWT_SECRET_KEY}
