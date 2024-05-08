@@ -2,6 +2,7 @@ package com.project.product.domain;
 
 import static com.project.product.ProductConstant.*;
 
+import java.io.Serializable;
 import java.security.InvalidParameterException;
 
 import jakarta.persistence.Column;
@@ -13,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Embeddable
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Price {
+public class Price implements Serializable {
 
 	@Column
 	private Integer price;

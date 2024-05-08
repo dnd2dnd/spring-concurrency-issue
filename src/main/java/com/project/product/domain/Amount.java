@@ -2,6 +2,7 @@ package com.project.product.domain;
 
 import static com.project.product.ProductConstant.*;
 
+import java.io.Serializable;
 import java.security.InvalidParameterException;
 
 import jakarta.persistence.Column;
@@ -13,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Embeddable
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Amount {
+public class Amount implements Serializable {
 
 	@Column
 	private Integer amount;
@@ -35,7 +36,7 @@ public class Amount {
 	}
 
 	private static void validateMin(int amount) {
-		if (amount >= 10000) {
+		if (amount < 10000) {
 			throw new InvalidParameterException(AMOUNT_IS_10000);
 		}
 	}

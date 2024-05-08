@@ -2,6 +2,7 @@ package com.project.product.dto.response;
 
 import com.project.product.domain.Product;
 import com.project.product.domain.ProductCategory;
+import com.project.product.domain.ProductStatus;
 
 public record ProductResponse(
 	Long productId,
@@ -10,7 +11,8 @@ public record ProductResponse(
 	Integer amount,
 	Integer sales,
 	String desc,
-	ProductCategory category
+	ProductCategory category,
+	ProductStatus status
 ) {
 	public static ProductResponse from(Product product) {
 		return new ProductResponse(
@@ -20,7 +22,8 @@ public record ProductResponse(
 			product.getAmount(),
 			product.getSales(),
 			product.getDescription(),
-			product.getCategory()
+			product.getCategory(),
+			product.getStatus()
 		);
 	}
 }
