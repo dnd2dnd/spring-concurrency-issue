@@ -1,10 +1,14 @@
 package com.project.seller.domain;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.project.auth.domain.BaseAuth;
 import com.project.member.domain.Email;
 import com.project.member.domain.Password;
+import com.project.product.domain.Product;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
@@ -12,6 +16,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -45,6 +50,9 @@ public class Seller extends BaseAuth {
 
 	@Column
 	private boolean isWithdrawn;
+
+	@OneToMany(mappedBy = "seller")
+	private final List<Product> products = new ArrayList<>();
 
 	private Seller(Email email, Password password, String businessLocation, String companyName,
 		TaxpayerIdentificationNum taxpayerIdentificationNum) {
