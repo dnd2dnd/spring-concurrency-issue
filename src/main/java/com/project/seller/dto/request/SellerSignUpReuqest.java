@@ -34,7 +34,7 @@ public record SellerSignUpReuqest(
 	String CompanyName,
 
 	@Schema(description = "업체주소", example = "서울특별시 영등포구 1111길 하루야채")
-	@NotNull(message = BUISINESS_LOCATION_NOT_NULL)
-	String BuisinessLocation
+	@NotNull(message = BUSINESS_LOCATION_NOT_NULL)
+	String BusinessLocation
 ) {
 }

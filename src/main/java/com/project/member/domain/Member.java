@@ -1,14 +1,20 @@
 package com.project.member.domain;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.project.auth.domain.BaseAuth;
+import com.project.order.domain.Orders;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,6 +29,9 @@ public class Member extends BaseAuth {
 
 	@Embedded
 	private Nickname nickname;
+
+	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+	private final List<Orders> ordersList = new ArrayList<>();
 
 	private Member(Email email, Nickname nickname, Password password) {
 		super(email, password);

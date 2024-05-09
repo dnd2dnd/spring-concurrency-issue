@@ -35,7 +35,7 @@ public class Amount {
 	}
 
 	private static void validateMin(int amount) {
-		if (amount >= 10000) {
+		if (amount < 10000) {
 			throw new InvalidParameterException(AMOUNT_IS_10000);
 		}
 	}

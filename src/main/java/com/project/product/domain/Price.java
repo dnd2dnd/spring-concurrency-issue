@@ -32,4 +32,9 @@ public class Price {
 			throw new InvalidParameterException(AMOUNT_IS_POSITIVE);
 		}
 	}
+
+	public static Integer calculatePrice(Integer price, Integer amout) {
+		return price * amout;
+
+	}
 }
