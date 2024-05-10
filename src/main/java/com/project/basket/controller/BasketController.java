@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.project.basket.dto.BasketResponse;
-import com.project.basket.service.BasketRedisService;
+import com.project.basket.service.BasketRedisUtil;
 
 import lombok.RequiredArgsConstructor;
 
@@ -20,13 +20,13 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/basket")
 public class BasketController {
 
-	private final BasketRedisService basketRedisService;
+	private final BasketRedisUtil basketRedisUtil;
 
 	@GetMapping
 	public ResponseEntity<List<BasketResponse>> getBasket(
 		@RequestParam Long memberId
 	) {
-		List<BasketResponse> responses = basketRedisService.getHashOps(memberId);
+		List<BasketResponse> responses = basketRedisUtil.getHashOps(memberId);
 		return ResponseEntity.ok(responses);
 	}
 
@@ -35,7 +35,7 @@ public class BasketController {
 		@RequestParam Long memberId,
 		@RequestParam Long productId
 	) {
-		basketRedisService.setValue(memberId, productId);
+		basketRedisUtil.setValue(memberId, productId);
 		return ResponseEntity.ok().build();
 	}
 
@@ -45,7 +45,7 @@ public class BasketController {
 		@RequestParam Long productId,
 		@RequestParam Integer amount
 	) {
-		basketRedisService.updateValue(memberId, productId, amount);
+		basketRedisUtil.updateValue(memberId, productId, amount);
 		return ResponseEntity.ok().build();
 	}
 }
