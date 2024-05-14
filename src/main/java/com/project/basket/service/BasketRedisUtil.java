@@ -37,12 +37,12 @@ public class BasketRedisUtil {
 
 	public void updateValue(Long key, Long productId, Integer value) {
 		HashOperations<Long, Long, BasketProduct> hashOperations = basketRedis.getHashOperations();
-		BasketProduct amount = hashOperations.get(key, productId);
-		if (amount == null) {
+		BasketProduct basketProduct = hashOperations.get(key, productId);
+		if (basketProduct == null) {
 			throw new ProductNotFoundException();
 		}
 
-		BasketProduct calculatedAmount = amount.calculate(value);
+		BasketProduct calculatedAmount = basketProduct.calculate(value);
 		hashOperations.put(key, productId, calculatedAmount);
 	}
 

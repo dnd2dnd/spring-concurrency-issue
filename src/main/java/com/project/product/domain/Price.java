@@ -30,7 +30,7 @@ public class Price implements Serializable {
 
 	private static void validatePositive(int price) {
 		if (price < 0) {
-			throw new InvalidParameterException(AMOUNT_IS_POSITIVE);
+			throw new InvalidParameterException(PRICE_IS_POSITIVE);
 		}
 	}
 }

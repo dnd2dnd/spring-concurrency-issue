@@ -4,9 +4,9 @@ import com.project.basket.domain.BasketProduct;
 
 public record BasketResponse(
 	Long productId,
-	Integer amount
+	Integer quantity
 ) {
 	public static BasketResponse of(BasketProduct basketProduct) {
-		return new BasketResponse(basketProduct.getProduct().getId(), basketProduct.getAmount());
+		return new BasketResponse(basketProduct.getProduct().getId(), basketProduct.getQuantity());
 	}
 }

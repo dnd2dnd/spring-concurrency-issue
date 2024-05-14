@@ -18,10 +18,10 @@ public record ProductCreateRequest(
 	@PositiveOrZero(message = PRICE_IS_POSITIVE)
 	Integer price,
 
-	@Schema(description = "수량", example = "100000")
-	@PositiveOrZero(message = AMOUNT_IS_POSITIVE)
-	@Min(value = 10000, message = AMOUNT_IS_10000)
-	Integer amount,
+	@Schema(description = "재고", example = "100000")
+	@PositiveOrZero(message = STOCK_IS_POSITIVE)
+	@Min(value = 10000, message = STOCK_INIT_IS_10000)
+	Integer stock,
 
 	@Schema(description = "설명", example = "신선하고 맛있는 바니바니 당근 당근~")
 	String description,

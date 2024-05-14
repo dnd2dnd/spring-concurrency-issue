@@ -31,7 +31,7 @@ public class ProductService {
 		Product product = Product.of(
 			productCreateRequest.name(),
 			productCreateRequest.price(),
-			productCreateRequest.amount(),
+			productCreateRequest.stock(),
 			productCreateRequest.description(),
 			productCreateRequest.category(),
 			seller
@@ -57,11 +57,11 @@ public class ProductService {
 		product.updateProduct(
 			productUpdateRequest.name(),
 			productUpdateRequest.price(),
-			productUpdateRequest.amount(),
 			productUpdateRequest.description(),
 			productUpdateRequest.category(),
 			productUpdateRequest.status()
 		);
+		product.updateStock(productUpdateRequest.stock());
 
 		return product.getId();
 	}

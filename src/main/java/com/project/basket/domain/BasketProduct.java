@@ -22,13 +22,13 @@ public class BasketProduct implements Serializable {
 
 	public static BasketProduct of(Product product, Integer quantity) {
 		validatePositive(quantity);
-		validateProductAmount(product.getAmount(), quantity);
+		validateProductAmount(product.getStock(), quantity);
 		return new BasketProduct(product, quantity);
 	}
 
 	private static void validatePositive(int quantity) {
 		if (quantity < 0) {
-			throw new InvalidParameterException(AMOUNT_IS_POSITIVE);
+			throw new InvalidParameterException(STOCK_IS_POSITIVE);
 		}
 	}
 
