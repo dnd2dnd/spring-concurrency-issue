@@ -1,12 +1,12 @@
 package com.project.basket.dto;
 
-import com.project.basket.domain.BasketAmount;
+import com.project.basket.domain.BasketProduct;
 
 public record BasketResponse(
 	Long productId,
 	Integer amount
 ) {
-	public static BasketResponse of(BasketAmount basketAmount) {
-		return new BasketResponse(basketAmount.getProduct().getId(), basketAmount.getAmount());
+	public static BasketResponse of(BasketProduct basketProduct) {
+		return new BasketResponse(basketProduct.getProduct().getId(), basketProduct.getAmount());
 	}
 }

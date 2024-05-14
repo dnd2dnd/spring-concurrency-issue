@@ -14,7 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 public class BasketRedis {
 	private final RedisTemplate<Long, Long> redisTemplate;
 	@Getter
-	private final HashOperations<Long, Long, BasketAmount> hashOperations;
+	private final HashOperations<Long, Long, BasketProduct> hashOperations;
 
 	public BasketRedis(RedisTemplate<Long, Long> redisTemplate) {
 		this.redisTemplate = redisTemplate;

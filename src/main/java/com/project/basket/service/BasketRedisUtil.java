@@ -8,7 +8,7 @@ import org.springframework.data.redis.core.HashOperations;
 import org.springframework.stereotype.Component;
 
 import com.project.basket.domain.BasketRedis;
-import com.project.basket.domain.BasketAmount;
+import com.project.basket.domain.BasketProduct;
 import com.project.basket.dto.BasketResponse;
 import com.project.basket.exception.ProductAlreadyAddedException;
 import com.project.basket.exception.ProductNotFoundException;
@@ -27,27 +27,27 @@ public class BasketRedisUtil {
 
 	public void setValue(Long key, Long productId) {
 		Product product = productRepository.getById(productId);
-		HashOperations<Long, Long, BasketAmount> hashOperations = basketRedis.getHashOperations();
-		BasketAmount value = hashOperations.get(key, productId);
+		HashOperations<Long, Long, BasketProduct> hashOperations = basketRedis.getHashOperations();
+		BasketProduct value = hashOperations.get(key, productId);
 		if (value != null) {
 			throw new ProductAlreadyAddedException();
 		}
-		hashOperations.put(key, productId, BasketAmount.of(product, 1));
+		hashOperations.put(key, productId, BasketProduct.of(product, 1));
 	}
 
 	public void updateValue(Long key, Long productId, Integer value) {
-		HashOperations<Long, Long, BasketAmount> hashOperations = basketRedis.getHashOperations();
-		BasketAmount amount = hashOperations.get(key, productId);
+		HashOperations<Long, Long, BasketProduct> hashOperations = basketRedis.getHashOperations();
+		BasketProduct amount = hashOperations.get(key, productId);
 		if (amount == null) {
 			throw new ProductNotFoundException();
 		}
 
-		BasketAmount calculatedAmount = amount.calculate(value);
+		BasketProduct calculatedAmount = amount.calculate(value);
 		hashOperations.put(key, productId, calculatedAmount);
 	}
 
 	public List<BasketResponse> getHashOps(Long key) {
-		HashOperations<Long, Long, BasketAmount> hashOperations = basketRedis.getHashOperations();
+		HashOperations<Long, Long, BasketProduct> hashOperations = basketRedis.getHashOperations();
 
 		List<BasketResponse> responses = new ArrayList<>();
 		for (Long productId : hashOperations.keys(key)) {
