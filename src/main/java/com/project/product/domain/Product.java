@@ -114,4 +114,5 @@ public class Product {
 	public void increaseSales() {
 		this.sales += 1;
 	}
+
 }

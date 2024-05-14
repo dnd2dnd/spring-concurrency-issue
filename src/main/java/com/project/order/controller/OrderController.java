@@ -23,8 +23,10 @@ public class OrderController {
 	private final OrderService orderService;
 
 	@PostMapping
-	public ResponseEntity<Void> createOrder(@RequestParam Long memberId,
-		@Valid @RequestBody OrderRequest orderRequest) {
+	public ResponseEntity<Void> createOrder(
+		@RequestParam Long memberId,
+		@Valid @RequestBody OrderRequest orderRequest
+	) {
 		Long id = orderService.createOrder(memberId, orderRequest);
 		URI uri = ServletUriComponentsBuilder.fromCurrentContextPath()
 			.path("/{id}")
@@ -33,5 +35,4 @@ public class OrderController {
 		return ResponseEntity.created(uri)
 			.build();
 	}
-
 }

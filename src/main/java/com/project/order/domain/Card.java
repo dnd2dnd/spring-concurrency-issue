@@ -1,6 +1,6 @@
 package com.project.order.domain;
 
-import static com.project.order.PaymentConstant.*;
+import static com.project.order.CardNumConstant.*;
 
 import java.security.InvalidParameterException;
 import java.util.regex.Pattern;
@@ -17,6 +17,7 @@ public class Card {
 	private static final int CARD_NUM_REQUIRED_LENGTH = 20;
 	public static final String CARD_NUM_REGEX = "\\d{4}-\\d{4}-\\d{4}-\\d{4}";
 	private static final Pattern CARD_NUM_PATTERN = Pattern.compile(CARD_NUM_REGEX);
+
 	@Column(unique = true)
 	private String cardNum;
 
@@ -31,10 +32,9 @@ public class Card {
 	}
 
 	private static void validateLength(String cardNum) {
-		if (CARD_NUM_REQUIRED_LENGTH == cardNum.length()) {
-			return;
+		if (CARD_NUM_REQUIRED_LENGTH != cardNum.length()) {
+			throw new IllegalArgumentException(CARD_NUM_LENGTH_INVALID);
 		}
-		throw new IllegalArgumentException(CARD_NUM_LENGTH_INVALID);
 	}
 
 	private static void validatePattern(String cardNum) {
@@ -43,3 +43,4 @@ public class Card {
 		}
 	}
 }
+

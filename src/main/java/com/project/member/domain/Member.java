@@ -33,6 +33,9 @@ public class Member extends BaseAuth {
 	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
 	private final List<Orders> ordersList = new ArrayList<>();
 
+	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+	private final List<Address> adressList = new ArrayList<>();
+
 	private Member(Email email, Nickname nickname, Password password) {
 		super(email, password);
 		this.nickname = nickname;

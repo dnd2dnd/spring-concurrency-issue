@@ -10,6 +10,7 @@ import com.project.member.domain.Email;
 import com.project.member.domain.Password;
 import com.project.product.domain.Product;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -51,7 +52,7 @@ public class Seller extends BaseAuth {
 	@Column
 	private boolean isWithdrawn;
 
-	@OneToMany(mappedBy = "seller")
+	@OneToMany(mappedBy = "seller", cascade = CascadeType.ALL)
 	private final List<Product> products = new ArrayList<>();
 
 	private Seller(Email email, Password password, String businessLocation, String companyName,
