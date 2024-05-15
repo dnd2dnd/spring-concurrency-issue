@@ -1,5 +1,6 @@
 package com.project.product.domain;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +24,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Product {
+public class Product implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -35,7 +36,7 @@ public class Product {
 	private Price price;
 
 	@Embedded
-	private Amount amount;
+	private Stock stock;
 
 	@Column
 	private Integer sales;
@@ -56,11 +57,11 @@ public class Product {
 	@OneToMany(mappedBy = "product")
 	private final List<ProductImage> productImage = new ArrayList<>();
 
-	private Product(String name, Price price, Amount amount, Integer sales, String description,
+	private Product(String name, Price price, Stock stock, Integer sales, String description,
 		ProductCategory category, ProductStatus status, Seller seller) {
 		this.name = name;
 		this.price = price;
-		this.amount = amount;
+		this.stock = stock;
 		this.sales = sales;
 		this.description = description;
 		this.category = category;
@@ -71,7 +72,7 @@ public class Product {
 	public static Product of(
 		String name,
 		Integer price,
-		Integer amount,
+		Integer stock,
 		String description,
 		ProductCategory category,
 		Seller seller
@@ -79,7 +80,7 @@ public class Product {
 		return new Product(
 			name,
 			Price.from(price),
-			Amount.from(amount),
+			Stock.from(stock),
 			0,
 			description,
 			category,
@@ -91,24 +92,26 @@ public class Product {
 		return price.getPrice();
 	}
 
-	public Integer getAmount() {
-		return amount.getAmount();
+	public Integer getStock() {
+		return stock.getStock();
 	}
 
 	public void updateProduct(
 		String name,
 		Integer price,
-		Integer amount,
 		String description,
 		ProductCategory category,
 		ProductStatus status
 	) {
 		this.name = name;
 		this.price = Price.from(price);
-		this.amount = Amount.from(amount);
 		this.description = description;
 		this.category = category;
 		this.status = status;
+	}
+
+	public void updateStock(int stock) {
+		this.stock.updateStock(stock);
 	}
 
 	public void increaseSales() {
