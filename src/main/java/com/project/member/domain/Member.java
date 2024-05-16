@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.project.auth.domain.BaseAuth;
-import com.project.order.domain.Orders;
+import com.project.order.domain.Order;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Embedded;
@@ -31,7 +31,7 @@ public class Member extends BaseAuth {
 	private Nickname nickname;
 
 	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
-	private final List<Orders> ordersList = new ArrayList<>();
+	private final List<Order> orderList = new ArrayList<>();
 
 	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
 	private final List<Address> adressList = new ArrayList<>();

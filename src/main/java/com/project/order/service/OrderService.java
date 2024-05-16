@@ -7,9 +7,9 @@ import com.project.member.domain.Address;
 import com.project.member.domain.Member;
 import com.project.member.repository.AddressRepository;
 import com.project.member.repository.MemberRepository;
+import com.project.order.domain.Order;
 import com.project.order.domain.OrderItem;
 import com.project.order.domain.OrderStatus;
-import com.project.order.domain.Orders;
 import com.project.order.dto.request.OrderRequest;
 import com.project.order.repository.OrderRepository;
 import com.project.product.domain.Product;
@@ -39,12 +39,12 @@ public class OrderService {
 			address = Address.of(orderRequest.deliveryAddress(), orderRequest.defaultAddress());
 		}
 		// 새로운 주문 객체 생성
-		Orders orders = Orders.of(member, address, orderRequest.cardNum(), orderRequest.amount(),
+		Order order = Order.of(member, address, orderRequest.cardNum(), orderRequest.amount(),
 			OrderStatus.WAITING_FOR_PAYMENT);
 		// 주문에 상품 추가
 		for (Product product : orderRequest.productList()) {
-			orders.addOrderItem(OrderItem.of(orders, product, orderRequest.amount()));
+			order.addOrderItem(OrderItem.of(order, product, orderRequest.amount()));
 		}
-		return orderRepository.save(orders).getId();
+		return orderRepository.save(order).getId();
 	}
 }

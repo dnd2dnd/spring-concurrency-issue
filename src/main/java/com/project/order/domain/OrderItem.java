@@ -27,7 +27,7 @@ public class OrderItem {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "orders_id")
-	private Orders orders;
+	private Order order;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "product_id")
@@ -36,17 +36,17 @@ public class OrderItem {
 	@Embedded
 	Amount amount;
 
-	private OrderItem(Orders orders, Product product, Amount amount) {
-		this.orders = orders;
+	private OrderItem(Order order, Product product, Amount amount) {
+		this.order = order;
 		this.product = product;
 		this.amount = amount;
 	}
 
-	public static OrderItem of(Orders order, Product product, Integer amount) {
+	public static OrderItem of(Order order, Product product, Integer amount) {
 		return new OrderItem(order, product, Amount.from(amount));
 	}
 
-	public void setOrders(Orders order) {
-		this.orders = order;
+	public void setOrder(Order order) {
+		this.order = order;
 	}
 }

@@ -21,6 +21,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -37,9 +38,10 @@ import lombok.NoArgsConstructor;
  * - 배송지
  */
 @Entity
+@Table(name = "ORDERS")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Orders extends BaseTime {
+public class Order extends BaseTime {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	Long id;
@@ -64,7 +66,7 @@ public class Orders extends BaseTime {
 	@Enumerated(EnumType.STRING)
 	OrderStatus orderStatus;
 
-	private Orders(Member member, Address address, Card card, Amount amount, OrderStatus orderStatus) {
+	private Order(Member member, Address address, Card card, Amount amount, OrderStatus orderStatus) {
 		this.member = member;
 		this.address = address;
 		this.card = card;
@@ -72,12 +74,12 @@ public class Orders extends BaseTime {
 		this.orderStatus = orderStatus;
 	}
 
-	public static Orders of(Member member, Address address, String cardNum, Integer amount, OrderStatus orderStatus) {
-		return new Orders(member, address, Card.from(cardNum), Amount.from(amount), orderStatus);
+	public static Order of(Member member, Address address, String cardNum, Integer amount, OrderStatus orderStatus) {
+		return new Order(member, address, Card.from(cardNum), Amount.from(amount), orderStatus);
 	}
 
 	public void addOrderItem(OrderItem orderItem) {
 		orderItemList.add(orderItem);
-		orderItem.setOrders(this);
+		orderItem.setOrder(this);
 	}
 }
