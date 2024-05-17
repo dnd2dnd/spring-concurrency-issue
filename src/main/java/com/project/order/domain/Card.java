@@ -1,46 +1,52 @@
 package com.project.order.domain;
 
-import static com.project.order.CardNumConstant.*;
-
-import java.security.InvalidParameterException;
-import java.util.regex.Pattern;
+import com.project.member.domain.Member;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Card {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	Long id;
 
-	private static final int CARD_NUM_REQUIRED_LENGTH = 20;
-	public static final String CARD_NUM_REGEX = "\\d{4}-\\d{4}-\\d{4}-\\d{4}";
-	private static final Pattern CARD_NUM_PATTERN = Pattern.compile(CARD_NUM_REGEX);
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "member_id")
+	Member member;
 
-	@Column(unique = true)
-	private String cardNum;
+	@Enumerated(EnumType.STRING)
+	CardCompany cardCompany;
 
-	private Card(String cardNum) {
-		this.cardNum = cardNum;
+	@Embedded
+	private Cards cards;
+
+	@Column
+	private boolean defaultPayMethod;
+
+	private Card(Member member, CardCompany cardCompany, Cards cards, boolean defaultPayMethod) {
+		this.member = member;
+		this.cardCompany = cardCompany;
+		this.cards = cards;
+		this.defaultPayMethod = defaultPayMethod;
 	}
 
-	public static Card from(String cardNum) {
-		validateLength(cardNum);
-		validatePattern(cardNum);
-		return new Card(cardNum);
+	public static Card of(Member member, CardCompany cardCompany, String cards, boolean defaultPayMethod) {
+		return new Card(member, cardCompany, Cards.from(cards), defaultPayMethod);
 	}
 
-	private static void validateLength(String cardNum) {
-		if (CARD_NUM_REQUIRED_LENGTH != cardNum.length()) {
-			throw new IllegalArgumentException(CARD_NUM_LENGTH_INVALID);
-		}
-	}
-
-	private static void validatePattern(String cardNum) {
-		if (!CARD_NUM_PATTERN.matcher(cardNum).matches()) {
-			throw new InvalidParameterException(CARD_NUM_FORMAT_INVALID);
-		}
-	}
 }
-

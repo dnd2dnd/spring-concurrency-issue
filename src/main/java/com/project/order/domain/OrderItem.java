@@ -1,10 +1,8 @@
 package com.project.order.domain;
 
-import com.project.product.domain.Amount;
 import com.project.product.domain.Product;
 
 import jakarta.persistence.Column;
-import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -26,24 +24,24 @@ public class OrderItem {
 	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "orders_id")
+	@JoinColumn(name = "order_id")
 	private Order order;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "product_id")
 	private Product product;
 
-	@Embedded
-	Amount amount;
+	@Column
+	private Integer quantity;
 
-	private OrderItem(Order order, Product product, Amount amount) {
+	private OrderItem(Order order, Product product, Integer quantity) {
 		this.order = order;
 		this.product = product;
-		this.amount = amount;
+		this.quantity = quantity;
 	}
 
-	public static OrderItem of(Order order, Product product, Integer amount) {
-		return new OrderItem(order, product, Amount.from(amount));
+	public static OrderItem of(Order order, Product product, Integer quantity) {
+		return new OrderItem(order, product, quantity);
 	}
 
 	public void setOrder(Order order) {

@@ -25,7 +25,7 @@ public class Address extends BaseTime {
 	@JoinColumn(name = "member_id")
 	private Member member;
 
-	@Column
+	@Column(unique = true)
 	String address;
 
 	@Column
@@ -41,5 +41,9 @@ public class Address extends BaseTime {
 			address,
 			defaultAddress
 		);
+	}
+
+	public void changeDefaultAddress(boolean defaultAddress) {
+		this.defaultAddress = defaultAddress;
 	}
 }

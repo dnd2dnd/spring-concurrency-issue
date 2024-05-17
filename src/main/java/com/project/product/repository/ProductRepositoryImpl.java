@@ -25,7 +25,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
 	public List<ProductResponse> findAllBySearch(ProductCategory category, ProductOrder productOrder, Order order,
 		String search) {
 		return jpaQueryFactory.select(
-				Projections.constructor(ProductResponse.class, product.id, product.name, product.price, product.amount,
+				Projections.constructor(ProductResponse.class, product.id, product.name, product.price, product.stock,
 					product.sales, product.description, product.category, product.status)
 			).from(product)
 			.where(eqCategory(category))

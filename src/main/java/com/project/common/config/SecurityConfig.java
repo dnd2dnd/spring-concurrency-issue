@@ -1,4 +1,4 @@
-package com.project.common;
+package com.project.common.config;
 
 import static org.springframework.security.config.http.SessionCreationPolicy.*;
 

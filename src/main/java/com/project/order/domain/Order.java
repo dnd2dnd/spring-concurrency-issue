@@ -6,10 +6,8 @@ import java.util.List;
 import com.project.common.BaseTime;
 import com.project.member.domain.Address;
 import com.project.member.domain.Member;
-import com.project.product.domain.Amount;
 
 import jakarta.persistence.CascadeType;
-import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -20,7 +18,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -50,36 +47,34 @@ public class Order extends BaseTime {
 	@JoinColumn(name = "member_id")
 	Member member;
 
-	@OneToMany(mappedBy = "orders", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
 	List<OrderItem> orderItemList = new ArrayList<>();
 
-	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	@JoinColumn(name = "delivery_id")
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "address_id")
 	private Address address;
 
-	@Embedded
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "card_id")
 	private Card card;
-
-	@Embedded
-	Amount amount;
 
 	@Enumerated(EnumType.STRING)
 	OrderStatus orderStatus;
 
-	private Order(Member member, Address address, Card card, Amount amount, OrderStatus orderStatus) {
+	private Order(Member member, Address address, Card card, OrderStatus orderStatus) {
 		this.member = member;
 		this.address = address;
 		this.card = card;
-		this.amount = amount;
 		this.orderStatus = orderStatus;
 	}
 
-	public static Order of(Member member, Address address, String cardNum, Integer amount, OrderStatus orderStatus) {
-		return new Order(member, address, Card.from(cardNum), Amount.from(amount), orderStatus);
+	public static Order of(Member member, Address address, Card card, OrderStatus orderStatus) {
+		return new Order(member, address, card, orderStatus);
 	}
 
 	public void addOrderItem(OrderItem orderItem) {
 		orderItemList.add(orderItem);
 		orderItem.setOrder(this);
 	}
+
 }
