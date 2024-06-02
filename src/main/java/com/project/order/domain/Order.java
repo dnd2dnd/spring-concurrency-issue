@@ -8,6 +8,7 @@ import com.project.member.domain.Address;
 import com.project.member.domain.Member;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -41,35 +42,36 @@ import lombok.NoArgsConstructor;
 public class Order extends BaseTime {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	Long id;
+	@Column(name = "order_id")
+	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "member_id")
-	Member member;
+	private Member member;
+
+	@Column(nullable = false, unique = true)
+	String orderName; //고객한테 보여줄 주문 번호
 
 	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
 	List<OrderItem> orderItemList = new ArrayList<>();
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "address_id")
 	private Address address;
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "card_id")
-	private Card card;
 
 	@Enumerated(EnumType.STRING)
 	OrderStatus orderStatus;
 
-	private Order(Member member, Address address, Card card, OrderStatus orderStatus) {
+	private Order(Member member, Address address, OrderStatus orderStatus,
+		String orderId) {
 		this.member = member;
 		this.address = address;
-		this.card = card;
 		this.orderStatus = orderStatus;
+		this.orderName = orderId;
 	}
 
-	public static Order of(Member member, Address address, Card card, OrderStatus orderStatus) {
-		return new Order(member, address, card, orderStatus);
+	public static Order of(Member member, Address address, OrderStatus orderStatus, String orderId) {
+		return new Order(member, address, orderStatus, orderId);
 	}
 
 	public void addOrderItem(OrderItem orderItem) {

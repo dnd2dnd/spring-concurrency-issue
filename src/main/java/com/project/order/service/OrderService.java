@@ -2,6 +2,8 @@ package com.project.order.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.stereotype.Service;
@@ -14,14 +16,12 @@ import com.project.member.domain.Member;
 import com.project.member.repository.AddressRepository;
 import com.project.member.repository.MemberRepository;
 import com.project.order.domain.BaseOrder;
-import com.project.order.domain.Card;
 import com.project.order.domain.Order;
 import com.project.order.domain.OrderItem;
 import com.project.order.domain.OrderStatus;
 import com.project.order.dto.request.BasketOrderRequest;
 import com.project.order.dto.request.OrderRequest;
 import com.project.order.dto.response.OrderResponse;
-import com.project.order.repository.CardRepository;
 import com.project.order.repository.OrderRepository;
 import com.project.product.domain.Product;
 import com.project.product.repository.ProductRepository;
@@ -38,13 +38,11 @@ public class OrderService {
 	private final MemberRepository memberRepository;
 	private final AddressRepository addressRepository;
 	private final ProductRepository productRepository;
-	private final CardRepository cardRepository;
 	private final BasketRedis basketRedis;
 
 	public void createBasketOrder(Long memberId, List<BasketOrderRequest> basketOrderRequestList) {
 		Member member = memberRepository.getById(memberId);
 		Address address = getAddress(memberId, basketOrderRequestList.get(0));
-		Card card = getCard(memberId, basketOrderRequestList.get(0));
 		HashOperations<Long, Long, BasketProduct> hashOperations = basketRedis.getHashOperations();
 
 		List<Order> orders = new ArrayList<>();
@@ -54,9 +52,9 @@ public class OrderService {
 			BasketProduct basketProduct = hashOperations.get(memberId, productId);
 
 			Product product = productRepository.getById(productId);
-
+			String orderId = UUID.randomUUID().toString();
 			// Order 생성
-			Order order = Order.of(member, address, card, OrderStatus.WAITING_FOR_PAYMENT);
+			Order order = Order.of(member, address, OrderStatus.WAITING_FOR_PAYMENT, orderId);
 			OrderItem orderItem = OrderItem.of(order, product, basketProduct.getQuantity());
 			order.addOrderItem(orderItem);
 
@@ -72,11 +70,11 @@ public class OrderService {
 	public Long createOrder(Long memberId, OrderRequest orderRequest) {
 		Member member = memberRepository.getById(memberId);
 		Product product = productRepository.getById(orderRequest.getProductId());
+		String orderId = UUID.randomUUID().toString();
 
 		Address address = getAddress(memberId, orderRequest);
-		Card card = getCard(memberId, orderRequest);
 
-		Order order = Order.of(member, address, card, OrderStatus.WAITING_FOR_PAYMENT);
+		Order order = Order.of(member, address, OrderStatus.WAITING_FOR_PAYMENT, orderId);
 
 		order.addOrderItem(OrderItem.of(order, product, orderRequest.getQuantity()));
 
@@ -85,26 +83,26 @@ public class OrderService {
 
 	//TODO 메서드 수정해야 함 ( 똑같은 객체가 여러 번 저장되는 거 확인함 )
 	private Address getAddress(Long memberId, BaseOrder orderRequest) {
-		Address address = addressRepository.findByMemberIdAndDefaultAddress(memberId, true);
-		log.info(address.getAddress());
-		if (address == null) {
-			address = Address.of(orderRequest.getDeliveryAddress(), orderRequest.isDefaultAddress());
-			addressRepository.save(address);
+		Member member = memberRepository.getById(memberId);
+		Optional<Address> optionalAddress = addressRepository.findByMember_IdAndDefaultAddress(memberId,
+			true);
+		Address address = null;
+		if (optionalAddress.isPresent() && orderRequest.getDeliveryAddress() == null) {
+			// 기본 배송지 주소 반환
+			log.info("defalut");
+			return optionalAddress.get();
 		}
-		if (orderRequest.isDefaultAddress()) {
-			address.changeDefaultAddress(address.isDefaultAddress());
-		}
-		return address;
-	}
 
-	private Card getCard(Long memberId, BaseOrder orderRequest) {
-		Card card = cardRepository.findByMember_IdAndDefaultPayMethod(memberId, true);
-		if (card == null) {
-			card = Card.of(memberRepository.getById(memberId), orderRequest.getCardCompany(),
-				orderRequest.getCardNum(), orderRequest.isDefaultPayMethod());
-			cardRepository.save(card);
+		//새로운 주소가 기본 배송지로 설정된 경우
+		if (orderRequest.isDefaultAddress() && optionalAddress.isPresent()) {
+			log.info("new");
+			optionalAddress.get().changeDefaultAddress(false);
+			address = Address.of(member, orderRequest.getDeliveryAddress(), true);
+		} else {
+			address = Address.of(member, orderRequest.getDeliveryAddress(), orderRequest.isDefaultAddress());
 		}
-		return card;
+
+		return addressRepository.save(address);
 	}
 
 	@Transactional(readOnly = true)

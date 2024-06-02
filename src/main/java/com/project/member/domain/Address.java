@@ -31,13 +31,15 @@ public class Address extends BaseTime {
 	@Column
 	private boolean defaultAddress;
 
-	private Address(String address, boolean defaultAddress) {
+	private Address(Member member, String address, boolean defaultAddress) {
+		this.member = member;
 		this.address = address;
 		this.defaultAddress = defaultAddress;
 	}
 
-	public static Address of(String address, boolean defaultAddress) {
+	public static Address of(Member member, String address, boolean defaultAddress) {
 		return new Address(
+			member,
 			address,
 			defaultAddress
 		);

@@ -11,9 +11,4 @@ public abstract class BaseOrder {
 
 	private boolean defaultAddress;
 
-	private boolean defaultPayMethod;
-
-	private CardCompany cardCompany;
-
-	private String cardNum;
 }

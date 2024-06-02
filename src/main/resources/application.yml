@@ -30,3 +30,10 @@ jwt:
 basket:
   timeout: ${BASKET_TIMEOUT}
   time-unit: ${BASKET_TIMEUNIT}
+
+payment:
+  toss:
+    test_client_api_key: ${TOSS_CLIENT_KEY}
+    test_secret_api_key: ${TOSS_CLIENT_SECRET_KEY}
+    toss_success_url: ${TOSS_SUCCESS_URL}
+    toss_fail_url: ${TOSS_FAIL_URL}
