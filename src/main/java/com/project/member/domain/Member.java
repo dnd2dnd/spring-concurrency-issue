@@ -1,17 +1,15 @@
 package com.project.member.domain;
 
-import org.springframework.security.crypto.password.PasswordEncoder;
-
 import com.project.auth.domain.BaseAuth;
-
-import jakarta.persistence.Embedded;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.project.coupon.domain.MemberCoupon;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Entity
@@ -23,6 +21,9 @@ public class Member extends BaseAuth {
 
 	@Embedded
 	private Nickname nickname;
+
+    @OneToMany(mappedBy = "member")
+    private final List<MemberCoupon> memberCoupons = new ArrayList<>();
 
 	private Member(Email email, Nickname nickname, Password password) {
 		super(email, password);
@@ -40,5 +41,9 @@ public class Member extends BaseAuth {
 	public String getNickname() {
 		return this.nickname.getNickname();
 	}
+
+    public void addCoupon(MemberCoupon memberCoupon) {
+        memberCoupons.add(memberCoupon);
+    }
 
 }

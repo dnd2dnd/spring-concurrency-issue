@@ -1,9 +1,9 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: ${RDS_URL}
-    username: ${RDS_USERNAME}
-    password: ${RDS_PASSWORD}
+    url: jdbc:mysql://localhost:3306/test
+    username: root
+    password: root
   #  h2:
   #    console:
   #      enabled: true
@@ -14,19 +14,19 @@ spring:
         format_sql: true
     show-sql: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
   #  sql:
   #    init:
   #      mode: always
   data:
     redis:
-      host: ${REDIS_HOST}
-      port: ${REDIS_PORT}
+      host: localhost
+      port: 6379
 
 jwt:
-  secret-key: ${JWT_SECRET_KEY}
-  access-token-expiration-time: ${JWT_ACCESS_TOKEN_EXPIRATION_TIME}
+  secret-key: 04ca023b39512e46d0c2cf4b48d5aac61d34302994c87ed4eff225dcf3b0a218739f3897051a057f9b846a69ea2927a587044164b7bae5e1306219d50b588cb1
+  access-token-expiration-time: 1800000
 
 basket:
-  timeout: ${BASKET_TIMEOUT}
-  time-unit: ${BASKET_TIMEUNIT}
+  timeout: 5
+  time-unit: MINUTES

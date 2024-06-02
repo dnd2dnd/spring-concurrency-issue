@@ -43,8 +43,15 @@ public class Product implements Serializable {
     @OneToMany(mappedBy = "product")
     private final List<ProductImage> productImage = new ArrayList<>();
 
-    private Product(String name, Price price, Stock stock, String description,
-                    ProductCategory category, ProductStatus status, Seller seller) {
+    private Product(
+        String name,
+        Price price,
+        Stock stock,
+        String description,
+        ProductCategory category,
+        ProductStatus status,
+        Seller seller
+    ) {
         this.name = name;
         this.price = price;
         this.stock = stock;
@@ -55,21 +62,22 @@ public class Product implements Serializable {
     }
 
     public static Product of(
-            String name,
-            Integer price,
-            Integer stock,
-            String description,
-            ProductCategory category,
-            Seller seller
+        String name,
+        Integer price,
+        Integer stock,
+        String description,
+        ProductCategory category,
+        Seller seller
     ) {
         return new Product(
-                name,
-                Price.from(price),
-                Stock.from(stock),
-                description,
-                category,
-                ProductStatus.SELL,
-                seller);
+            name,
+            Price.from(price),
+            Stock.from(stock),
+            description,
+            category,
+            ProductStatus.SELL,
+            seller
+        );
     }
 
     public Integer getPrice() {
@@ -85,11 +93,11 @@ public class Product implements Serializable {
     }
 
     public void updateProduct(
-            String name,
-            Integer price,
-            String description,
-            ProductCategory category,
-            ProductStatus status
+        String name,
+        Integer price,
+        String description,
+        ProductCategory category,
+        ProductStatus status
     ) {
         this.name = name;
         this.price = Price.from(price);

@@ -51,9 +51,13 @@ public class Stock implements Serializable {
     }
 
     public void increase() {
-        if (totalQuantity >= salesQuantity) {
+        validateStock();
+        salesQuantity++;
+    }
+
+    public void validateStock() {
+        if (totalQuantity <= salesQuantity) {
             throw new IllegalArgumentException("재고 없음");
         }
-        salesQuantity++;
     }
 }
