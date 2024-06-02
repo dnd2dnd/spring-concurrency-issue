@@ -7,8 +7,8 @@ import java.util.Objects;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.stereotype.Component;
 
-import com.project.basket.domain.BasketRedis;
 import com.project.basket.domain.BasketProduct;
+import com.project.basket.domain.BasketRedis;
 import com.project.basket.dto.BasketResponse;
 import com.project.basket.exception.ProductAlreadyAddedException;
 import com.project.basket.exception.ProductNotFoundException;
@@ -32,7 +32,8 @@ public class BasketRedisUtil {
 		if (value != null) {
 			throw new ProductAlreadyAddedException();
 		}
-		hashOperations.put(key, productId, BasketProduct.of(product, 1));
+		hashOperations.put(key, productId,
+			BasketProduct.of(product.getId(), product.getStock(), product.getSales(), 1));
 	}
 
 	public void updateValue(Long key, Long productId, Integer value) {
