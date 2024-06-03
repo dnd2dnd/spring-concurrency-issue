@@ -1,47 +1,63 @@
 package com.project.product.domain;
 
-import static com.project.product.ProductConstant.*;
-
-import java.io.Serializable;
-import java.security.InvalidParameterException;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+import java.security.InvalidParameterException;
+
+import static com.project.product.ProductConstant.STOCK_INIT_IS_10000;
+import static com.project.product.ProductConstant.STOCK_IS_POSITIVE;
+
 @Getter
 @Embeddable
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Stock implements Serializable {
 
-	@Column
-	private Integer stock;
+    @Column
+    private Integer totalQuantity;
 
-	private Stock(Integer stock) {
-		this.stock = stock;
-	}
+    @Column
+    private Integer salesQuantity;
 
-	public static Stock from(Integer stock) {
-		validatePositive(stock);
-		validateMin(stock);
-		return new Stock(stock);
-	}
+    private Stock(Integer totalQuantity) {
+        this.totalQuantity = totalQuantity;
+        this.salesQuantity = totalQuantity;
+    }
 
-	private static void validatePositive(int stock) {
-		if (stock < 0) {
-			throw new InvalidParameterException(STOCK_IS_POSITIVE);
-		}
-	}
+    public static Stock from(Integer totalQuantity) {
+        validatePositive(totalQuantity);
+        validateMin(totalQuantity);
+        return new Stock(totalQuantity);
+    }
 
-	private static void validateMin(int stock) {
-		if (stock < 10000) {
-			throw new InvalidParameterException(STOCK_INIT_IS_10000);
-		}
-	}
+    private static void validatePositive(int stock) {
+        if (stock < 0) {
+            throw new InvalidParameterException(STOCK_IS_POSITIVE);
+        }
+    }
 
-	public void updateStock(int stock) {
-		this.stock = stock;
-	}
+    private static void validateMin(int stock) {
+        if (stock < 10000) {
+            throw new InvalidParameterException(STOCK_INIT_IS_10000);
+        }
+    }
+
+    public void updateStock(int quantity) {
+        this.totalQuantity += quantity;
+    }
+
+    public void increase() {
+        validateStock();
+        salesQuantity++;
+    }
+
+    public void validateStock() {
+        if (totalQuantity <= salesQuantity) {
+            throw new IllegalArgumentException("재고 없음");
+        }
+    }
 }
