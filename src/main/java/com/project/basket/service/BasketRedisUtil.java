@@ -1,22 +1,21 @@
 package com.project.basket.service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
-import org.springframework.data.redis.core.HashOperations;
-import org.springframework.stereotype.Component;
-
-import com.project.basket.domain.BasketRedis;
 import com.project.basket.domain.BasketProduct;
+import com.project.basket.domain.BasketRedis;
 import com.project.basket.dto.BasketResponse;
 import com.project.basket.exception.ProductAlreadyAddedException;
 import com.project.basket.exception.ProductNotFoundException;
 import com.project.product.domain.Product;
+import com.project.product.domain.Stock;
 import com.project.product.repository.ProductRepository;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.HashOperations;
+import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 @Slf4j
 @Component
@@ -32,7 +31,9 @@ public class BasketRedisUtil {
 		if (value != null) {
 			throw new ProductAlreadyAddedException();
 		}
-		hashOperations.put(key, productId, BasketProduct.of(product, 1));
+        Stock stock = product.getStock();
+		hashOperations.put(key, productId,
+			BasketProduct.of(product.getId(), stock.getTotalQuantity(), stock.getSalesQuantity(),1));
 	}
 
 	public void updateValue(Long key, Long productId, Integer value) {
@@ -55,5 +56,4 @@ public class BasketRedisUtil {
 		}
 		return responses;
 	}
-
 }

@@ -1,4 +1,4 @@
-package com.project.coupon;
+package com.project.coupon.domain.vo;
 
 import com.project.product.domain.Price;
 import jakarta.persistence.Column;

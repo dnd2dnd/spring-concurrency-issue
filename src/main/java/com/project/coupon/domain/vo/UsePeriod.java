@@ -1,4 +1,4 @@
-package com.project.coupon;
+package com.project.coupon.domain.vo;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
