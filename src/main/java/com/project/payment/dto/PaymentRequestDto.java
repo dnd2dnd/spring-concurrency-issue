@@ -10,7 +10,7 @@ public class PaymentRequestDto {
 	@NotNull
 	private PaymentType paymentType; // 결제 타입
 
-	private Long amount; //수량
+	private Long amount; //결제 금액
 
 	private String orderId; //주문 고유 번호
 

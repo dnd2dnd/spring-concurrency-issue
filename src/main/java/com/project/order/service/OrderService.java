@@ -84,12 +84,12 @@ public class OrderService {
 	//TODO 메서드 수정해야 함 ( 똑같은 객체가 여러 번 저장되는 거 확인함 )
 	private Address getAddress(Long memberId, BaseOrder orderRequest) {
 		Member member = memberRepository.getById(memberId);
-		Optional<Address> optionalAddress = addressRepository.findByMember_IdAndDefaultAddress(memberId,
-			true);
+		Optional<Address> optionalAddress = addressRepository.findByMember_IdAndDefaultAddress(
+			memberId, true);
 		Address address = null;
+		//TODO member, OrderRequest 순서
 		if (optionalAddress.isPresent() && orderRequest.getDeliveryAddress() == null) {
 			// 기본 배송지 주소 반환
-			log.info("defalut");
 			return optionalAddress.get();
 		}
 

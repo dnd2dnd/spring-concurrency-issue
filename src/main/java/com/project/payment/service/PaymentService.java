@@ -1,5 +1,6 @@
 package com.project.payment.service;
 
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Collections;
@@ -71,7 +72,7 @@ public class PaymentService {
 	public Payment verifyPayment(String orderId, Long amount) {
 		Payment payment = paymentRepository.findByOrderId(orderId)
 			.orElseThrow(OrderNotFoundException::new);
-		//주문 수량과 결제할 때 주문 수량이 일치하는지 확인
+		//주문 금액과 결제할 때 금엑이 일치하는지 확인
 		if (!payment.getAmount().equals(amount)) {
 			throw new PaymentAmountException();
 		}
@@ -112,6 +113,29 @@ public class PaymentService {
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
 		return headers;
+	}
+
+	//toss 결제 취소
+	public String cancelPayment(Long memberId, String paymentKey, String cancelReason) throws JSONException {
+		RestTemplate restTemplate = new RestTemplate();
+		URI uri = URI.create(TossPaymentConfig.baseUrl + paymentKey + "/cancel");
+		HttpHeaders headers = getHeaders();
+
+		JSONObject param = new JSONObject();
+		param.put("cancelReason", cancelReason);
+
+		String requestJson = param.toString();
+
+		HttpEntity<String> entity = new HttpEntity<>(requestJson, headers);
+
+		ResponseEntity<String> response = restTemplate.exchange(
+			uri,
+			HttpMethod.POST,
+			entity,
+			String.class
+		);
+
+		return response.getBody();
 	}
 }
 

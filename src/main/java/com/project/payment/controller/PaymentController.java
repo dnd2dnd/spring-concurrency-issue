@@ -18,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
-@RequestMapping("/api/v1/payments")
+@RequestMapping("api/v1/payments")
 @RequiredArgsConstructor
 @Slf4j
 public class PaymentController {
@@ -42,11 +42,12 @@ public class PaymentController {
 		return paymentSuccessDto;
 	}
 
-	//toss 결제 실패
-	// @PostMapping("/toss/fail")
-	// public ResponseEntity<PaymentResponseDto> requestTossPayment(@RequestParam Long memberId,
-	// 	@RequestBody @Valid PaymentRequestDto paymentReqDto) {
-	// 	PaymentResponseDto paymentResDto = paymentService.requestTossPayment(memberId, paymentReqDto);
-	// 	return ResponseEntity.ok(paymentResDto);
-	// }
+	//toss 결제 취소
+	@PostMapping("/cancle")
+	public String canclePayment(@RequestParam Long memberId,
+		@RequestParam String paymentKey,
+		@RequestParam String cancleReason) throws JSONException {
+		String cancle = paymentService.cancelPayment(memberId, paymentKey, cancleReason);
+		return cancle;
+	}
 }

@@ -8,7 +8,6 @@ import com.project.payment.domain.PaymentType;
 public record PaymentResponseDto(
 	PaymentType payType,
 	Long amount,
-
 	String orderName,
 	String orderId,
 	String memberEmail, // TODO 알아보기 쉽게 customerEmail로 변경?

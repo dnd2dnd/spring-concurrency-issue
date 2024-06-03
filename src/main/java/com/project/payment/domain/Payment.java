@@ -22,7 +22,6 @@ import lombok.Setter;
 @Getter
 @Setter //TODO Test 해보기 위해 @Setter 사용했음, method로 바꿀 예정
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-
 public class Payment extends BaseTime {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
