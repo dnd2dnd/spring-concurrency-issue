@@ -31,7 +31,7 @@ public class OrderController {
 		@RequestParam Long memberId,
 		@Valid @RequestBody OrderRequest orderRequest
 	) {
-		Long id = orderService.createOrder(memberId, orderRequest);
+		String id = orderService.createOrder(memberId, orderRequest);
 		URI uri = ServletUriComponentsBuilder.fromCurrentContextPath()
 			.path("/{id}")
 			.buildAndExpand(id).toUri();
@@ -40,6 +40,7 @@ public class OrderController {
 			.build();
 	}
 
+	//TODO basket 이름 유지할껀지?
 	@PostMapping("/basket")
 	public ResponseEntity<Void> createBasketOrder(
 		@RequestParam Long memberId,

@@ -9,8 +9,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.project.payment.dto.PaymentRequestDto;
-import com.project.payment.dto.PaymentResponseDto;
+import com.project.payment.dto.request.PaymentRequestDto;
+import com.project.payment.dto.response.PaymentCancleDto;
+import com.project.payment.dto.response.PaymentResponseDto;
+import com.project.payment.dto.response.PaymentSuccessDto;
 import com.project.payment.service.PaymentService;
 
 import jakarta.validation.Valid;
@@ -33,21 +35,22 @@ public class PaymentController {
 
 	//toss 결제 성공
 	@GetMapping("/toss/success")
-	public String tossPaymentSuccess(@RequestParam String paymentKey,
+	public ResponseEntity<PaymentSuccessDto> tossPaymentSuccess(@RequestParam String paymentKey,
 		@RequestParam String orderId,
 		@RequestParam Long amount
 	) throws JSONException {
 		log.info("toss payment 성공");
-		String paymentSuccessDto = paymentService.tossPaymentSuccess(paymentKey, orderId, amount);
+		ResponseEntity<PaymentSuccessDto> paymentSuccessDto = paymentService.tossPaymentSuccess(paymentKey, orderId,
+			amount);
 		return paymentSuccessDto;
 	}
 
 	//toss 결제 취소
 	@PostMapping("/cancle")
-	public String canclePayment(@RequestParam Long memberId,
+	public PaymentCancleDto canclePayment(@RequestParam Long memberId,
 		@RequestParam String paymentKey,
 		@RequestParam String cancleReason) throws JSONException {
-		String cancle = paymentService.cancelPayment(memberId, paymentKey, cancleReason);
+		PaymentCancleDto cancle = paymentService.tossPaymentCancle(memberId, paymentKey, cancleReason);
 		return cancle;
 	}
 }

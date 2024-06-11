@@ -23,5 +23,5 @@ public class OrderRequest extends BaseOrder {
 	@Schema(description = "수량", example = "2")
 	@PositiveOrZero(message = STOCK_IS_POSITIVE)
 	private Integer quantity;
-	//TODO 쿠폰 추가
+
 }

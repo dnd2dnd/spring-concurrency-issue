@@ -1,4 +1,4 @@
-package com.project.payment.dto;
+package com.project.payment.dto.request;
 
 import com.project.payment.domain.PaymentType;
 

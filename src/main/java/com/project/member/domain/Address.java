@@ -25,7 +25,7 @@ public class Address extends BaseTime {
 	@JoinColumn(name = "member_id")
 	private Member member;
 
-	@Column(unique = true)
+	@Column(unique = true, nullable = false)
 	String address;
 
 	@Column

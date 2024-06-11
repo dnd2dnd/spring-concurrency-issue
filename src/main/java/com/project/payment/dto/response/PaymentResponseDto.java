@@ -1,4 +1,4 @@
-package com.project.payment.dto;
+package com.project.payment.dto.response;
 
 import java.time.LocalDateTime;
 
@@ -10,12 +10,9 @@ public record PaymentResponseDto(
 	Long amount,
 	String orderName,
 	String orderId,
-	String memberEmail, // TODO 알아보기 쉽게 customerEmail로 변경?
+	String memberEmail,
 	String successUrl,
 	String failUrl,
-	// String failReason,
-	// boolean cancelYN,
-	// String cancelReason, // 단순 변심, 상태 불량 등 값 고정?
 	LocalDateTime createdAt // 결제일자
 
 ) {

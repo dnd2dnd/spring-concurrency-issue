@@ -36,9 +36,6 @@ public class Member extends BaseAuth {
 	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
 	private final List<Address> adressList = new ArrayList<>();
 
-	// @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
-	// private final List<Card> cardList = new ArrayList<>();
-
 	private Member(Email email, Nickname nickname, Password password) {
 		super(email, password);
 		this.nickname = nickname;
@@ -55,10 +52,5 @@ public class Member extends BaseAuth {
 	public String getNickname() {
 		return this.nickname.getNickname();
 	}
-
-	// public void addCard(Card card) {
-	// 	cardList.add(card);
-	// 	card.setMember(this);
-	// }
 
 }

@@ -15,7 +15,7 @@ public record OrderResponse(
 			orderItem.getId(),
 			orderItem.getProduct().getId(),
 			orderItem.getProduct().getName(),
-			orderItem.getProduct().getPrice(),
+			orderItem.getPrice().getPrice() * orderItem.getQuantity(),
 			orderItem.getOrder().getOrderStatus()
 		);
 	}

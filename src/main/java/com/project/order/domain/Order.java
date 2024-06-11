@@ -30,8 +30,6 @@ import lombok.NoArgsConstructor;
  * - 상품 아이디, Long, FK
  * - 결제 수단 (card)
  * - 상품 개수, Integer, NN
- * - 주문 결제 금액 , Integer, NN ->
- 상품 아이디랑 개수 알면 계산할 수 있으니 굳이 저장할 필요가 있을까? response에서만 주면 된다면 컬럼 지워도 될
  * - 주문상태 (결제 완료, 입금 대기, 취소)
  * - 배송지
  */
@@ -41,16 +39,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Order extends BaseTime {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.UUID)
 	@Column(name = "order_id")
-	private Long id;
+	private String id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "member_id")
 	private Member member;
 
-	@Column(nullable = false, unique = true)
-	String orderName; //고객한테 보여줄 주문 번호
+	@Column(nullable = false)
+	String orderName; // 주문 이름
 
 	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
 	List<OrderItem> orderItemList = new ArrayList<>();
@@ -62,21 +60,27 @@ public class Order extends BaseTime {
 	@Enumerated(EnumType.STRING)
 	OrderStatus orderStatus;
 
-	private Order(Member member, Address address, OrderStatus orderStatus,
-		String orderId) {
+	private Order(Member member, Address address, OrderStatus orderStatus) {
 		this.member = member;
 		this.address = address;
 		this.orderStatus = orderStatus;
-		this.orderName = orderId;
 	}
 
-	public static Order of(Member member, Address address, OrderStatus orderStatus, String orderId) {
-		return new Order(member, address, orderStatus, orderId);
+	public static Order of(Member member, Address address, OrderStatus orderStatus) {
+		return new Order(member, address, orderStatus);
 	}
 
 	public void addOrderItem(OrderItem orderItem) {
 		orderItemList.add(orderItem);
 		orderItem.setOrder(this);
+	}
+
+	public void addOrderName(String orderName) {
+		this.orderName = orderName;
+	}
+
+	public static void updateOrderStatus(Order order, OrderStatus orderStatus) {
+		order.orderStatus = orderStatus;
 	}
 
 }

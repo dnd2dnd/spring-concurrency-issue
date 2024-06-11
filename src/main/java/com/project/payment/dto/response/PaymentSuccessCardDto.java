@@ -1,4 +1,4 @@
-package com.project.payment.dto;
+package com.project.payment.dto.response;
 
 // Toss 결제 성공시 card 정보 반환 Dto
 public class PaymentSuccessCardDto {

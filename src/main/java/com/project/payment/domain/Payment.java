@@ -30,16 +30,16 @@ public class Payment extends BaseTime {
 
 	@Column(nullable = false, name = "pay_type")
 	@Enumerated(EnumType.STRING)
-	private PaymentType paymentType;
+	private PaymentType paymentType; //결제 type
 
 	@Column(nullable = false)
-	private Long amount;
+	private Long amount; // 주문 금액
 
-	@Column(nullable = false, unique = true)
-	private String orderName;
+	@Column(nullable = false)
+	private String orderName; //주문 이름
 
 	@Column
-	private String orderId;
+	private String orderId; //주문 id
 
 	@ManyToOne(cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "member_id")
@@ -54,35 +54,19 @@ public class Payment extends BaseTime {
 	@Column(nullable = false)
 	private boolean paySuccessYN; //성공 여부
 
-	@Column(nullable = false)
-	private boolean cancelYN; //취소 여부
-
-	@Column
-	private String cancelReason; //취소 이유
-
-	//TODO 주석 처리한 부분은 추후 메서드로 받아야하기 때문에 지워야 할 것 같음
 	private Payment(Member member, PaymentType paymentType, Long amount, String orderId,
-		String orderName, String successUrl, String failUrl, boolean paySuccessYN) {
-		// , String paymentKey, String failReason, boolean cancelYN,
-		// String cancelReason) {
+		String orderName, boolean paySuccessYN) {
 		this.member = member;
 		this.paymentType = paymentType;
 		this.amount = amount;
 		this.orderId = orderId;
 		this.orderName = orderName;
 		this.paySuccessYN = paySuccessYN;
-		// this.paymentKey = paymentKey;
-		// this.failReason = failReason;
-		// this.cancelYN = cancelYN;
-		// this.cancelReason = cancelReason;
 	}
 
 	public static Payment of(Member member, PaymentType paymentType, Long amount,
-		String orderId, String orderName, String successUrl, String failUrl, boolean paySuccessYN) {
-		// , String paymentKey, String failReason, boolean cancelYN,
-		// String cancelReason) {
-		return new Payment(member, paymentType, amount, orderId, orderName, successUrl, failUrl, paySuccessYN);
-		//paymentKey, failReason, cancelYN, cancelReason);
+		String orderId, String orderName, boolean paySuccessYN) {
+		return new Payment(member, paymentType, amount, orderId, orderName, paySuccessYN);
 	}
 
 }

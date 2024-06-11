@@ -9,8 +9,5 @@ import com.project.order.domain.Order;
 public interface OrderRepository extends JpaRepository<Order, Long> {
 	List<Order> findByMember_Id(Long memberId);
 
-	default Order getById(Long orderId) {
-		return findById(orderId).orElseThrow(
-			() -> new IllegalArgumentException("Not Found ID : " + orderId));
-	}
+	Order findById(String orderId);
 }

@@ -1,8 +1,10 @@
 package com.project.order.domain;
 
+import com.project.product.domain.Price;
 import com.project.product.domain.Product;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -34,14 +36,18 @@ public class OrderItem {
 	@Column
 	private Integer quantity;
 
-	private OrderItem(Order order, Product product, Integer quantity) {
+	@Embedded
+	private Price price;
+
+	private OrderItem(Order order, Product product, Integer quantity, Price price) {
 		this.order = order;
 		this.product = product;
 		this.quantity = quantity;
+		this.price = price;
 	}
 
-	public static OrderItem of(Order order, Product product, Integer quantity) {
-		return new OrderItem(order, product, quantity);
+	public static OrderItem of(Order order, Product product, Integer quantity, Price price) {
+		return new OrderItem(order, product, quantity, price);
 	}
 
 	public void setOrder(Order order) {

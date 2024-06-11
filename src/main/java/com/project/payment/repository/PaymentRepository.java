@@ -11,5 +11,6 @@ import com.project.payment.domain.Payment;
 public interface PaymentRepository extends JpaRepository<Payment, Long> {
 	Optional<Payment> findByOrderId(String orderId);
 
-	Optional<Payment> findByPaymentKeyAndMember_Email(String paymentKey, String email);
+	Payment findByPaymentKey(String payementKey);
+
 }

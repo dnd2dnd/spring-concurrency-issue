@@ -1,5 +1,7 @@
 package com.project.payment.service;
 
+import static com.project.order.domain.OrderStatus.*;
+
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
@@ -19,11 +21,17 @@ import org.springframework.web.client.RestTemplate;
 import com.project.common.config.TossPaymentConfig;
 import com.project.member.domain.Member;
 import com.project.member.repository.MemberRepository;
+import com.project.order.domain.Order;
+import com.project.order.repository.OrderRepository;
+import com.project.payment.domain.CanclePayment;
 import com.project.payment.domain.Payment;
-import com.project.payment.dto.PaymentRequestDto;
-import com.project.payment.dto.PaymentResponseDto;
+import com.project.payment.dto.request.PaymentRequestDto;
+import com.project.payment.dto.response.PaymentCancleDto;
+import com.project.payment.dto.response.PaymentResponseDto;
+import com.project.payment.dto.response.PaymentSuccessDto;
 import com.project.payment.exception.OrderNotFoundException;
 import com.project.payment.exception.PaymentAmountException;
+import com.project.payment.repository.CanclePaymentRepository;
 import com.project.payment.repository.PaymentRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -37,13 +45,14 @@ public class PaymentService {
 	private final MemberRepository memberRepository;
 	private final PaymentRepository paymentRepository;
 	private final TossPaymentConfig tossPaymentConfig;
+	private final OrderRepository orderRepository;
+	private final CanclePaymentRepository canclePaymentRepository;
 
 	//토스 결제 요청
 	public PaymentResponseDto requestTossPayment(Long memberId, PaymentRequestDto paymentRequestDto) {
 		Member member = memberRepository.getById(memberId);
 		Payment payment = Payment.of(member, paymentRequestDto.getPaymentType(), paymentRequestDto.getAmount(),
-			paymentRequestDto.getOrderId(), paymentRequestDto.getOrderName(), paymentRequestDto.getSuccessUrl(),
-			paymentRequestDto.getFailUrl(), false);
+			paymentRequestDto.getOrderId(), paymentRequestDto.getOrderName(), false);
 		payment.setMember(member);
 		paymentRepository.save(payment);
 
@@ -57,12 +66,15 @@ public class PaymentService {
 	}
 
 	//토스 결제 성공
-	public String tossPaymentSuccess(String paymentKey, String orderId, Long amount) throws JSONException {
+	public ResponseEntity<PaymentSuccessDto> tossPaymentSuccess(String paymentKey, String orderId, Long amount) throws
+		JSONException {
 		Payment payment = verifyPayment(orderId, amount);
-		String result = requestPaymentAccept(paymentKey, orderId, amount);
-
+		ResponseEntity<PaymentSuccessDto> result = requestPaymentAccept(paymentKey, orderId, amount);
+		Order order = orderRepository.findById(payment.getOrderId());
+		log.info(payment.getOrderName());
 		payment.setPaymentKey(paymentKey); // 결제 성공시 redirect로 받는 paymentKey 저장
 		payment.setPaySuccessYN(true); // 결제 성공 -> PaySuccess값 true로 설정
+		Order.updateOrderStatus(order, PAYMENT_COMPLETED);
 		paymentRepository.save(payment);
 
 		return result;
@@ -79,7 +91,8 @@ public class PaymentService {
 		return payment;
 	}
 
-	public String requestPaymentAccept(String paymentKey, String orderId, Long amount) throws JSONException {
+	public ResponseEntity<PaymentSuccessDto> requestPaymentAccept(String paymentKey, String orderId, Long amount) throws
+		JSONException {
 		RestTemplate restTemplate = new RestTemplate();
 		HttpHeaders headers = getHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
@@ -93,14 +106,14 @@ public class PaymentService {
 		HttpEntity<String> entity = new HttpEntity<>(requestJson, headers);
 
 		//토스 url로 success response 응답 받음
-		ResponseEntity<String> response = restTemplate.exchange(
+		ResponseEntity<PaymentSuccessDto> response = restTemplate.exchange(
 			TossPaymentConfig.baseUrl + paymentKey,
 			HttpMethod.POST,
 			entity,
-			String.class
+			PaymentSuccessDto.class
 		);
 
-		return response.getBody();
+		return response;
 	}
 
 	private HttpHeaders getHeaders() {
@@ -116,7 +129,8 @@ public class PaymentService {
 	}
 
 	//toss 결제 취소
-	public String cancelPayment(Long memberId, String paymentKey, String cancelReason) throws JSONException {
+	public PaymentCancleDto cancelPayment(CanclePayment canclePayment, String paymentKey, String cancelReason)
+		throws JSONException {
 		RestTemplate restTemplate = new RestTemplate();
 		URI uri = URI.create(TossPaymentConfig.baseUrl + paymentKey + "/cancel");
 		HttpHeaders headers = getHeaders();
@@ -128,15 +142,33 @@ public class PaymentService {
 
 		HttpEntity<String> entity = new HttpEntity<>(requestJson, headers);
 
-		ResponseEntity<String> response = restTemplate.exchange(
+		ResponseEntity<PaymentCancleDto> response = restTemplate.exchange(
 			uri,
 			HttpMethod.POST,
 			entity,
-			String.class
+			PaymentCancleDto.class
 		);
 
-		return response.getBody();
+		return PaymentCancleDto.of(canclePayment);
 	}
+
+	public PaymentCancleDto tossPaymentCancle(Long memberId, String paymentKey,
+		String cancleReason) throws
+		JSONException {
+		Member member = memberRepository.getById(memberId);
+		Payment payment = paymentRepository.findByPaymentKey(paymentKey);
+		Order order = orderRepository.findById(payment.getOrderId());
+		CanclePayment canclePayment = CanclePayment.of(member, paymentKey, payment.getAmount(),
+			order.getId(), order.getOrderName(),
+			cancleReason);
+		canclePaymentRepository.save(canclePayment);
+		paymentRepository.delete(payment);
+		PaymentCancleDto result = cancelPayment(canclePayment, paymentKey, cancleReason);
+		Order.updateOrderStatus(order, CANCELLED);
+
+		return result;
+	}
+
 }
 
 
