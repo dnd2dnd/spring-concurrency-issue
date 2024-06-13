@@ -1,7 +1,7 @@
 package com.project.payment.domain;
 
 import com.project.common.BaseTime;
-import com.project.member.domain.Member;
+import com.project.user.domain.User;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -42,8 +42,8 @@ public class Payment extends BaseTime {
 	private String orderId; //주문 id
 
 	@ManyToOne(cascade = CascadeType.PERSIST)
-	@JoinColumn(name = "member_id")
-	private Member member; //멤버
+	@JoinColumn(name = "users_id")
+	private User user; //멤버
 
 	@Column(unique = true)
 	private String paymentKey; //결제 key
@@ -54,9 +54,9 @@ public class Payment extends BaseTime {
 	@Column(nullable = false)
 	private boolean paySuccessYN; //성공 여부
 
-	private Payment(Member member, PaymentType paymentType, Long amount, String orderId,
+	private Payment(User user, PaymentType paymentType, Long amount, String orderId,
 		String orderName, boolean paySuccessYN) {
-		this.member = member;
+		this.user = user;
 		this.paymentType = paymentType;
 		this.amount = amount;
 		this.orderId = orderId;
@@ -64,9 +64,9 @@ public class Payment extends BaseTime {
 		this.paySuccessYN = paySuccessYN;
 	}
 
-	public static Payment of(Member member, PaymentType paymentType, Long amount,
+	public static Payment of(User user, PaymentType paymentType, Long amount,
 		String orderId, String orderName, boolean paySuccessYN) {
-		return new Payment(member, paymentType, amount, orderId, orderName, paySuccessYN);
+		return new Payment(user, paymentType, amount, orderId, orderName, paySuccessYN);
 	}
 
 }

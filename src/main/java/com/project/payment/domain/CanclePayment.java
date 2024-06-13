@@ -1,6 +1,6 @@
 package com.project.payment.domain;
 
-import com.project.member.domain.Member;
+import com.project.user.domain.User;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -35,7 +35,7 @@ public class CanclePayment {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "member_id")
-	private Member member;
+	private User user;
 
 	@Column(nullable = false)
 	private String orderName;
@@ -52,9 +52,9 @@ public class CanclePayment {
 	@Column
 	private String cancleReason;
 
-	private CanclePayment(Member member, String paymentKey, Long amount, String orderId,
+	private CanclePayment(User user, String paymentKey, Long amount, String orderId,
 		String orderName, String cancleReason) {
-		this.member = member;
+		this.user = user;
 		this.paymentKey = paymentKey;
 		this.cancleAmount = amount;
 		this.orderId = orderId;
@@ -63,9 +63,9 @@ public class CanclePayment {
 
 	}
 
-	public static CanclePayment of(Member member, String paymentKey, Long amount, String orderId,
+	public static CanclePayment of(User user, String paymentKey, Long amount, String orderId,
 		String orderName, String cancleReason) {
-		return new CanclePayment(member, paymentKey, amount, orderId, orderName, cancleReason);
+		return new CanclePayment(user, paymentKey, amount, orderId, orderName, cancleReason);
 	}
 
 }

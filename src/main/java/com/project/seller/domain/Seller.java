@@ -7,9 +7,9 @@ import java.util.List;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.project.auth.domain.BaseAuth;
-import com.project.member.domain.Email;
-import com.project.member.domain.Password;
 import com.project.product.domain.Product;
+import com.project.user.domain.Email;
+import com.project.user.domain.Password;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;

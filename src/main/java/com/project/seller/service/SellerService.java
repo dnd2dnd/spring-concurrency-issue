@@ -1,6 +1,6 @@
 package com.project.seller.service;
 
-import static com.project.member.MemberConstant.*;
+import static com.project.user.UserConstant.*;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -10,12 +10,12 @@ import org.springframework.transaction.annotation.Transactional;
 import com.project.auth.JWTProvider;
 import com.project.auth.service.LoginService;
 import com.project.common.BusinessException;
-import com.project.member.domain.Email;
-import com.project.member.dto.request.SignInRequest;
-import com.project.member.dto.response.TokenResponse;
 import com.project.seller.domain.Seller;
 import com.project.seller.dto.request.SellerSignUpReuqest;
 import com.project.seller.repository.SellerRepository;
+import com.project.user.domain.Email;
+import com.project.user.dto.request.SignInRequest;
+import com.project.user.dto.response.TokenResponse;
 
 import lombok.RequiredArgsConstructor;
 

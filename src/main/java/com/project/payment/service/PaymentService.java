@@ -19,20 +19,20 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import com.project.common.config.TossPaymentConfig;
-import com.project.member.domain.Member;
-import com.project.member.repository.MemberRepository;
 import com.project.order.domain.Order;
 import com.project.order.repository.OrderRepository;
 import com.project.payment.domain.CanclePayment;
 import com.project.payment.domain.Payment;
 import com.project.payment.dto.request.PaymentRequestDto;
-import com.project.payment.dto.response.PaymentCancleDto;
+import com.project.payment.dto.response.CanclePaymentDto;
 import com.project.payment.dto.response.PaymentResponseDto;
 import com.project.payment.dto.response.PaymentSuccessDto;
 import com.project.payment.exception.OrderNotFoundException;
 import com.project.payment.exception.PaymentAmountException;
 import com.project.payment.repository.CanclePaymentRepository;
 import com.project.payment.repository.PaymentRepository;
+import com.project.user.domain.User;
+import com.project.user.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,18 +42,18 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Slf4j
 public class PaymentService {
-	private final MemberRepository memberRepository;
+	private final UserRepository userRepository;
 	private final PaymentRepository paymentRepository;
 	private final TossPaymentConfig tossPaymentConfig;
 	private final OrderRepository orderRepository;
 	private final CanclePaymentRepository canclePaymentRepository;
 
 	//토스 결제 요청
-	public PaymentResponseDto requestTossPayment(Long memberId, PaymentRequestDto paymentRequestDto) {
-		Member member = memberRepository.getById(memberId);
-		Payment payment = Payment.of(member, paymentRequestDto.getPaymentType(), paymentRequestDto.getAmount(),
+	public PaymentResponseDto requestTossPayment(Long userId, PaymentRequestDto paymentRequestDto) {
+		User user = userRepository.getById(userId);
+		Payment payment = Payment.of(user, paymentRequestDto.getPaymentType(), paymentRequestDto.getAmount(),
 			paymentRequestDto.getOrderId(), paymentRequestDto.getOrderName(), false);
-		payment.setMember(member);
+		payment.setUser(user);
 		paymentRepository.save(payment);
 
 		String successUrl = paymentRequestDto.getSuccessUrl() == null ? tossPaymentConfig.getSuccessfulUrl() :
@@ -129,7 +129,7 @@ public class PaymentService {
 	}
 
 	//toss 결제 취소
-	public PaymentCancleDto cancelPayment(CanclePayment canclePayment, String paymentKey, String cancelReason)
+	public CanclePaymentDto cancelPayment(CanclePayment canclePayment, String paymentKey, String cancelReason)
 		throws JSONException {
 		RestTemplate restTemplate = new RestTemplate();
 		URI uri = URI.create(TossPaymentConfig.baseUrl + paymentKey + "/cancel");
@@ -142,33 +142,31 @@ public class PaymentService {
 
 		HttpEntity<String> entity = new HttpEntity<>(requestJson, headers);
 
-		ResponseEntity<PaymentCancleDto> response = restTemplate.exchange(
+		ResponseEntity<CanclePaymentDto> response = restTemplate.exchange(
 			uri,
 			HttpMethod.POST,
 			entity,
-			PaymentCancleDto.class
+			CanclePaymentDto.class
 		);
 
-		return PaymentCancleDto.of(canclePayment);
+		return CanclePaymentDto.of(canclePayment);
 	}
 
-	public PaymentCancleDto tossPaymentCancle(Long memberId, String paymentKey,
-		String cancleReason) throws
-		JSONException {
-		Member member = memberRepository.getById(memberId);
+	public CanclePaymentDto tossPaymentCancle(Long userId, String paymentKey, String cancleReason)
+		throws JSONException {
+		User user = userRepository.getById(userId);
 		Payment payment = paymentRepository.findByPaymentKey(paymentKey);
 		Order order = orderRepository.findById(payment.getOrderId());
-		CanclePayment canclePayment = CanclePayment.of(member, paymentKey, payment.getAmount(),
+		CanclePayment canclePayment = CanclePayment.of(user, paymentKey, payment.getAmount(),
 			order.getId(), order.getOrderName(),
 			cancleReason);
 		canclePaymentRepository.save(canclePayment);
 		paymentRepository.delete(payment);
-		PaymentCancleDto result = cancelPayment(canclePayment, paymentKey, cancleReason);
+		CanclePaymentDto result = cancelPayment(canclePayment, paymentKey, cancleReason);
 		Order.updateOrderStatus(order, CANCELLED);
 
 		return result;
 	}
 
 }
-
 

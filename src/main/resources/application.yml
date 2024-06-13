@@ -27,7 +27,7 @@ jwt:
   secret-key: ${JWT_SECRET_KEY}
   access-token-expiration-time: ${JWT_ACCESS_TOKEN_EXPIRATION_TIME}
 
-basket:
+cart:
   timeout: ${BASKET_TIMEOUT}
   time-unit: ${BASKET_TIMEUNIT}
 
@@ -37,4 +37,3 @@ payment:
     test_secret_api_key: ${TOSS_CLIENT_SECRET_KEY}
     toss_success_url: ${TOSS_SUCCESS_URL}
     toss_fail_url: ${TOSS_FAIL_URL}
-

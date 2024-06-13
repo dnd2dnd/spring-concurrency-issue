@@ -1,10 +1,10 @@
 package com.project.seller.dto.request;
 
-import static com.project.member.MemberConstant.*;
 import static com.project.seller.SellerConstant.*;
 import static com.project.seller.domain.TaxpayerIdentificationNum.*;
+import static com.project.user.UserConstant.*;
 
-import com.project.member.domain.Password;
+import com.project.user.domain.Password;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;

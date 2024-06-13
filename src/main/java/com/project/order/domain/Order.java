@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.project.common.BaseTime;
-import com.project.member.domain.Address;
-import com.project.member.domain.Member;
+import com.project.user.domain.Address;
+import com.project.user.domain.User;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -44,8 +44,8 @@ public class Order extends BaseTime {
 	private String id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "member_id")
-	private Member member;
+	@JoinColumn(name = "users_id")
+	private User user;
 
 	@Column(nullable = false)
 	String orderName; // 주문 이름
@@ -60,14 +60,14 @@ public class Order extends BaseTime {
 	@Enumerated(EnumType.STRING)
 	OrderStatus orderStatus;
 
-	private Order(Member member, Address address, OrderStatus orderStatus) {
-		this.member = member;
+	private Order(User user, Address address, OrderStatus orderStatus) {
+		this.user = user;
 		this.address = address;
 		this.orderStatus = orderStatus;
 	}
 
-	public static Order of(Member member, Address address, OrderStatus orderStatus) {
-		return new Order(member, address, orderStatus);
+	public static Order of(User user, Address address, OrderStatus orderStatus) {
+		return new Order(user, address, orderStatus);
 	}
 
 	public void addOrderItem(OrderItem orderItem) {

@@ -4,8 +4,8 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.project.member.domain.Email;
 import com.project.seller.domain.Seller;
+import com.project.user.domain.Email;
 
 public interface SellerRepository extends JpaRepository<Seller, Long> {
 	Optional<Seller> findByEmail(Email email);

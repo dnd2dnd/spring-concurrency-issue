@@ -22,7 +22,7 @@ public record PaymentResponseDto(
 			payment.getAmount(),
 			payment.getOrderName(),
 			payment.getOrderId(),
-			payment.getMember().getEmail(),
+			payment.getUser().getEmail(),
 			successUrl,
 			failUrl,
 			payment.getCreatedDate()
