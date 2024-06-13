@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.project.order.dto.request.BasketOrderRequest;
+import com.project.order.dto.request.CartOrderRequest;
 import com.project.order.dto.request.OrderRequest;
 import com.project.order.dto.response.OrderResponse;
 import com.project.order.service.OrderService;
@@ -28,10 +28,10 @@ public class OrderController {
 
 	@PostMapping
 	public ResponseEntity<Void> createOrder(
-		@RequestParam Long memberId,
+		@RequestParam Long userId,
 		@Valid @RequestBody OrderRequest orderRequest
 	) {
-		String id = orderService.createOrder(memberId, orderRequest);
+		String id = orderService.createOrder(userId, orderRequest);
 		URI uri = ServletUriComponentsBuilder.fromCurrentContextPath()
 			.path("/{id}")
 			.buildAndExpand(id).toUri();
@@ -40,21 +40,20 @@ public class OrderController {
 			.build();
 	}
 
-	//TODO basket 이름 유지할껀지?
-	@PostMapping("/basket")
+	@PostMapping("/cart")
 	public ResponseEntity<Void> createBasketOrder(
-		@RequestParam Long memberId,
-		@Valid @RequestBody List<BasketOrderRequest> basketOrderRequestList
+		@RequestParam Long userId,
+		@Valid @RequestBody List<CartOrderRequest> cartOrderRequestList
 	) {
-		orderService.createBasketOrder(memberId, basketOrderRequestList);
+		orderService.createBasketOrder(userId, cartOrderRequestList);
 		return ResponseEntity.ok().build();
 	}
 
 	@GetMapping("")
 	public ResponseEntity<List<OrderResponse>> getOrderList(
-		@RequestParam Long memberId
+		@RequestParam Long userId
 	) {
-		List<OrderResponse> responses = orderService.getOrderList(memberId);
+		List<OrderResponse> responses = orderService.getOrderList(userId);
 		return ResponseEntity.ok(responses);
 	}
 }

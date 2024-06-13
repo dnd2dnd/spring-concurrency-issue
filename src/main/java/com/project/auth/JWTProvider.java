@@ -7,14 +7,12 @@ import java.util.Date;
 
 import javax.crypto.SecretKey;
 
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 import com.project.auth.config.JWTCredentials;
 import com.project.auth.exception.TokenExpiredException;
 import com.project.auth.exception.TokenInvalidException;
-import com.project.member.dto.response.TokenResponse;
+import com.project.user.dto.response.TokenResponse;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -49,7 +47,6 @@ public class JWTProvider {
 			.signWith(key, SignatureAlgorithm.HS256)
 			.compact();
 	}
-
 
 	public Long getPayload(String token) {
 		return Long.parseLong(validateParseJws(token).getBody().getSubject());
