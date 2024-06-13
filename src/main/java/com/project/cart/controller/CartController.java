@@ -47,6 +47,7 @@ public class CartController {
 		@RequestParam Long productId,
 		@RequestParam Integer amount
 	) {
+		log.info("call1");
 		cartRedisUtil.updateValue(userId, productId, amount);
 		return ResponseEntity.ok().build();
 	}

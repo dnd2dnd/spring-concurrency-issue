@@ -27,7 +27,7 @@ jwt:
   secret-key: ${JWT_SECRET_KEY}
   access-token-expiration-time: ${JWT_ACCESS_TOKEN_EXPIRATION_TIME}
 
-basket:
+cart:
   timeout: ${BASKET_TIMEOUT}
   time-unit: ${BASKET_TIMEUNIT}
 

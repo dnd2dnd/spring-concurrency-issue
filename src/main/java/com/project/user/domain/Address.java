@@ -48,5 +48,4 @@ public class Address extends BaseTime {
 	public void changeDefaultAddress(boolean defaultAddress) {
 		this.defaultAddress = defaultAddress;
 	}
-
 }
