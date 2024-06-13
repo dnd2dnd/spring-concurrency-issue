@@ -17,16 +17,20 @@ import lombok.NoArgsConstructor;
 public class Stock implements Serializable {
 
 	@Column
-	private Integer stock;
+	private Integer totalQuantity;
 
-	private Stock(Integer stock) {
-		this.stock = stock;
+	@Column
+	private Integer salesQuantity;
+
+	private Stock(Integer totalQuantity) {
+		this.totalQuantity = totalQuantity;
+		this.salesQuantity = totalQuantity;
 	}
 
-	public static Stock from(Integer stock) {
-		validatePositive(stock);
-		validateMin(stock);
-		return new Stock(stock);
+	public static Stock from(Integer totalQuantity) {
+		validatePositive(totalQuantity);
+		validateMin(totalQuantity);
+		return new Stock(totalQuantity);
 	}
 
 	private static void validatePositive(int stock) {
@@ -41,7 +45,18 @@ public class Stock implements Serializable {
 		}
 	}
 
-	public void updateStock(int stock) {
-		this.stock = stock;
+	public void updateStock(int quantity) {
+		this.totalQuantity += quantity;
+	}
+
+	public void increase() {
+		validateStock();
+		salesQuantity++;
+	}
+
+	public void validateStock() {
+		if (totalQuantity <= salesQuantity) {
+			throw new IllegalArgumentException("재고 없음");
+		}
 	}
 }

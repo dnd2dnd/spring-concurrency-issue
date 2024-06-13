@@ -7,6 +7,6 @@ public record BasketResponse(
 	Integer quantity
 ) {
 	public static BasketResponse of(BasketProduct basketProduct) {
-		return new BasketResponse(basketProduct.getProduct().getId(), basketProduct.getQuantity());
+		return new BasketResponse(basketProduct.getProductId(), basketProduct.getQuantity());
 	}
 }

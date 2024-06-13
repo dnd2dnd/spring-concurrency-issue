@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.project.auth.domain.BaseAuth;
+import com.project.coupon.domain.MemberCoupon;
 import com.project.order.domain.Order;
 
 import jakarta.persistence.CascadeType;
@@ -36,6 +37,9 @@ public class Member extends BaseAuth {
 	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
 	private final List<Address> adressList = new ArrayList<>();
 
+	@OneToMany(mappedBy = "member")
+	private final List<MemberCoupon> memberCoupons = new ArrayList<>();
+
 	private Member(Email email, Nickname nickname, Password password) {
 		super(email, password);
 		this.nickname = nickname;
@@ -51,6 +55,10 @@ public class Member extends BaseAuth {
 
 	public String getNickname() {
 		return this.nickname.getNickname();
+	}
+
+	public void addCoupon(MemberCoupon memberCoupon) {
+		memberCoupons.add(memberCoupon);
 	}
 
 }

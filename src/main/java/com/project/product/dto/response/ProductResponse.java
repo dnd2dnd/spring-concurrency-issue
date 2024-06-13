@@ -19,8 +19,8 @@ public record ProductResponse(
 			product.getId(),
 			product.getName(),
 			product.getPrice(),
-			product.getStock(),
-			product.getSales(),
+			product.getTotalQuantity(),
+			product.getSalesQuantity(),
 			product.getDescription(),
 			product.getCategory(),
 			product.getStatus()

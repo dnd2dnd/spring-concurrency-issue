@@ -6,12 +6,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.project.basket.dto.BasketRequest;
 import com.project.basket.dto.BasketResponse;
 import com.project.basket.service.BasketRedisUtil;
 
@@ -34,9 +32,10 @@ public class BasketController {
 
 	@PostMapping
 	public ResponseEntity<Void> addProductByBasket(
-		@RequestBody BasketRequest basketRequest
+		@RequestParam Long memberId,
+		@RequestParam Long productId
 	) {
-		basketRedisUtil.setValue(basketRequest);
+		basketRedisUtil.setValue(memberId, productId);
 		return ResponseEntity.ok().build();
 	}
 

@@ -9,11 +9,11 @@ import org.springframework.stereotype.Component;
 
 import com.project.basket.domain.BasketProduct;
 import com.project.basket.domain.BasketRedis;
-import com.project.basket.dto.BasketRequest;
 import com.project.basket.dto.BasketResponse;
 import com.project.basket.exception.ProductAlreadyAddedException;
 import com.project.basket.exception.ProductNotFoundException;
 import com.project.product.domain.Product;
+import com.project.product.domain.Stock;
 import com.project.product.repository.ProductRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -26,15 +26,16 @@ public class BasketRedisUtil {
 	private final BasketRedis basketRedis;
 	private final ProductRepository productRepository;
 
-	public void setValue(BasketRequest basketRequest) {
-		Product product = productRepository.getById(basketRequest.getProductId());
+	public void setValue(Long key, Long productId) {
+		Product product = productRepository.getById(productId);
 		HashOperations<Long, Long, BasketProduct> hashOperations = basketRedis.getHashOperations();
-		BasketProduct value = hashOperations.get(basketRequest.getMemberId(), basketRequest.getProductId());
+		BasketProduct value = hashOperations.get(key, productId);
 		if (value != null) {
 			throw new ProductAlreadyAddedException();
 		}
-		hashOperations.put(basketRequest.getMemberId(), basketRequest.getProductId(), BasketProduct.of(product,
-			basketRequest.getQuantity()));
+		Stock stock = product.getStock();
+		hashOperations.put(key, productId,
+			BasketProduct.of(product.getId(), stock.getTotalQuantity(), stock.getSalesQuantity(), 1));
 	}
 
 	public void updateValue(Long key, Long productId, Integer value) {
@@ -57,5 +58,4 @@ public class BasketRedisUtil {
 		}
 		return responses;
 	}
-
 }

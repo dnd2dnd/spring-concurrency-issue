@@ -25,8 +25,9 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
 	public List<ProductResponse> findAllBySearch(ProductCategory category, ProductOrder productOrder, Order order,
 		String search) {
 		return jpaQueryFactory.select(
-				Projections.constructor(ProductResponse.class, product.id, product.name, product.price, product.stock,
-					product.sales, product.description, product.category, product.status)
+				Projections.constructor(ProductResponse.class, product.id, product.name, product.price,
+					product.stock.totalQuantity, product.stock.salesQuantity, product.description,
+					product.category, product.status)
 			).from(product)
 			.where(eqCategory(category))
 			.orderBy(createProductSpecifier(productOrder, order))
@@ -43,7 +44,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
 	private OrderSpecifier<?> createProductSpecifier(ProductOrder productOrder, Order order) {
 		// TODO 기본 정렬, 판매량이 많은 순으로 했음
 		if (Objects.isNull(productOrder)) {
-			return new OrderSpecifier<>(Order.DESC, product.sales);
+			return new OrderSpecifier<>(Order.DESC, product.stock.salesQuantity);
 		}
 
 		switch (productOrder) {
@@ -51,7 +52,7 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
 				return new OrderSpecifier<>(order, product.price.price);
 			}
 			case SALES -> {
-				return new OrderSpecifier<>(order, product.sales);
+				return new OrderSpecifier<>(order, product.stock.salesQuantity);
 			}
 		}
 		return new OrderSpecifier<>(order, product.price.price);

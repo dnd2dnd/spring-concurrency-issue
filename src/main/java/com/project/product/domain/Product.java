@@ -39,9 +39,6 @@ public class Product implements Serializable {
 	private Stock stock;
 
 	@Column
-	private Integer sales;
-
-	@Column
 	private String description;
 
 	@Enumerated(EnumType.STRING)
@@ -57,12 +54,18 @@ public class Product implements Serializable {
 	@OneToMany(mappedBy = "product")
 	private final List<ProductImage> productImage = new ArrayList<>();
 
-	private Product(String name, Price price, Stock stock, Integer sales, String description,
-		ProductCategory category, ProductStatus status, Seller seller) {
+	private Product(
+		String name,
+		Price price,
+		Stock stock,
+		String description,
+		ProductCategory category,
+		ProductStatus status,
+		Seller seller
+	) {
 		this.name = name;
 		this.price = price;
 		this.stock = stock;
-		this.sales = sales;
 		this.description = description;
 		this.category = category;
 		this.status = status;
@@ -81,19 +84,23 @@ public class Product implements Serializable {
 			name,
 			Price.from(price),
 			Stock.from(stock),
-			0,
 			description,
 			category,
 			ProductStatus.SELL,
-			seller);
+			seller
+		);
 	}
 
 	public Integer getPrice() {
 		return price.getPrice();
 	}
 
-	public Integer getStock() {
-		return stock.getStock();
+	public Integer getTotalQuantity() {
+		return stock.getTotalQuantity();
+	}
+
+	public Integer getSalesQuantity() {
+		return stock.getSalesQuantity();
 	}
 
 	public void updateProduct(
@@ -114,8 +121,7 @@ public class Product implements Serializable {
 		this.stock.updateStock(stock);
 	}
 
-	public void increaseSales() {
-		this.sales += 1;
+	public void increase() {
+		stock.increase();
 	}
-
 }
