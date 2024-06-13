@@ -1,15 +1,24 @@
 package com.project.member.domain;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import com.project.auth.domain.BaseAuth;
 import com.project.coupon.domain.MemberCoupon;
-import jakarta.persistence.*;
+import com.project.order.domain.Order;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Entity
@@ -22,8 +31,14 @@ public class Member extends BaseAuth {
 	@Embedded
 	private Nickname nickname;
 
-    @OneToMany(mappedBy = "member")
-    private final List<MemberCoupon> memberCoupons = new ArrayList<>();
+	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+	private final List<Order> orderList = new ArrayList<>();
+
+	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+	private final List<Address> adressList = new ArrayList<>();
+
+	@OneToMany(mappedBy = "member")
+	private final List<MemberCoupon> memberCoupons = new ArrayList<>();
 
 	private Member(Email email, Nickname nickname, Password password) {
 		super(email, password);
@@ -42,8 +57,8 @@ public class Member extends BaseAuth {
 		return this.nickname.getNickname();
 	}
 
-    public void addCoupon(MemberCoupon memberCoupon) {
-        memberCoupons.add(memberCoupon);
-    }
+	public void addCoupon(MemberCoupon memberCoupon) {
+		memberCoupons.add(memberCoupon);
+	}
 
 }

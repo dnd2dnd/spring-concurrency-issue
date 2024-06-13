@@ -1,12 +1,13 @@
 package com.project.basket.domain;
 
-import com.project.basket.exception.ProductQuantityExceededException;
-import lombok.Getter;
+import static com.project.product.ProductConstant.*;
 
 import java.io.Serializable;
 import java.security.InvalidParameterException;
 
-import static com.project.product.ProductConstant.STOCK_IS_POSITIVE;
+import com.project.basket.exception.ProductQuantityExceededException;
+
+import lombok.Getter;
 
 @Getter
 public class BasketProduct implements Serializable {

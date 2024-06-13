@@ -51,9 +51,9 @@ public class SellerService implements LoginService {
 			signUpRequest.email(),
 			signUpRequest.password(),
 			passwordEncoder,
-			signUpRequest.BuisinessLocation(),
-			signUpRequest.CompanyName(),
-			signUpRequest.TaxpayerIdentificationNum()
+			signUpRequest.businessLocation(),
+			signUpRequest.companyName(),
+			signUpRequest.taxpayerIdentificationNum()
 		);
 	}
 

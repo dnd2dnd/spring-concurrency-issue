@@ -33,4 +33,8 @@ public class Price implements Serializable {
 			throw new InvalidParameterException(PRICE_IS_POSITIVE);
 		}
 	}
+	
+	public static Price calculatePrice(Integer price, Integer amount) {
+		return new Price(price * amount);
+	}
 }

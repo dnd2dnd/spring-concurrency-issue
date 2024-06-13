@@ -27,14 +27,14 @@ public record SellerSignUpReuqest(
 	@Pattern(regexp = TAXPAYER_IDENTIFICATION_NUM_REGEX,
 		message = TAXPAYER_IDENTIFICATION_NUM_FORMAT_INVALID)
 	@NotNull(message = TAXPAYER_IDENTIFICATION_NUM_NOT_NULL)
-	String TaxpayerIdentificationNum,
+	String taxpayerIdentificationNum,
 
 	@Schema(description = "업체명", example = "하루야채")
 	@NotNull(message = COMPANY_NAME_NOT_NULL)
-	String CompanyName,
+	String companyName,
 
 	@Schema(description = "업체주소", example = "서울특별시 영등포구 1111길 하루야채")
-	@NotNull(message = BUISINESS_LOCATION_NOT_NULL)
-	String BuisinessLocation
+	@NotNull(message = BUSINESS_LOCATION_NOT_NULL)
+	String businessLocation
 ) {
 }
