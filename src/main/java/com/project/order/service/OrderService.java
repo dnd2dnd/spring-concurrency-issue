@@ -9,13 +9,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.project.cart.domain.CartProduct;
 import com.project.cart.domain.CartRedis;
-import com.project.order.domain.BaseOrder;
 import com.project.order.domain.Order;
 import com.project.order.domain.OrderItem;
 import com.project.order.domain.OrderStatus;
 import com.project.order.dto.request.CartOrderRequest;
 import com.project.order.dto.request.OrderRequest;
 import com.project.order.dto.response.OrderResponse;
+import com.project.order.exception.InsufficientProductStockException;
 import com.project.order.repository.OrderRepository;
 import com.project.product.domain.Price;
 import com.project.product.domain.Product;
@@ -39,9 +39,10 @@ public class OrderService {
 	private final ProductRepository productRepository;
 	private final CartRedis cartRedis;
 
-	public void createBasketOrder(Long userId, List<CartOrderRequest> cartOrderRequestList) {
+	public void createCartOrder(Long userId, String deliveryAddress, boolean defaultAddress,
+		List<CartOrderRequest> cartOrderRequestList) {
 		User user = userRepository.getById(userId);
-		Address address = getAddress(userId, cartOrderRequestList.get(0));
+		Address address = getAddress(userId, deliveryAddress, defaultAddress);
 		HashOperations<Long, Long, CartProduct> hashOperations = cartRedis.getHashOperations();
 
 		Order order = Order.of(user, address, OrderStatus.WAITING_FOR_PAYMENT);
@@ -55,16 +56,20 @@ public class OrderService {
 			CartProduct cartProduct = hashOperations.get(userId, productId);
 
 			Product product = productRepository.getById(productId);
+			int productQuantity = product.getTotalQuantity() - product.getSalesQuantity();
+
+			if (productQuantity < cartProduct.getQuantity()) {
+				throw new InsufficientProductStockException();
+			}
 
 			OrderItem orderItem = OrderItem.of(order, product, cartProduct.getQuantity(),
 				Price.calculatePrice(product.getPrice(), cartProduct.getQuantity()));
 
 			order.addOrderItem(orderItem);
-
 			// 장바구니에서 상품 삭제
 			hashOperations.delete(userId, productId);
 		}
-		String orderName = firstProductName + " 외 " + (cartOrderRequestList.size() - 1) + "개";
+		String orderName = createOrderName(firstProductName, cartOrderRequestList.size());
 		order.addOrderName(orderName);
 		orderRepository.save(order);
 	}
@@ -74,9 +79,11 @@ public class OrderService {
 		Product product = productRepository.getById(orderRequest.getProductId());
 		String orderName = product.getName();
 
-		Address address = getAddress(userId, orderRequest);
-		log.info(address.getAddress());
-
+		Address address = getAddress(userId, orderRequest.getDeliveryAddress(), orderRequest.isDefaultAddress());
+		int productQuantity = product.getTotalQuantity() - product.getSalesQuantity();
+		if (productQuantity < orderRequest.getQuantity()) {
+			throw new InsufficientProductStockException();
+		}
 		Order order = Order.of(user, address, OrderStatus.WAITING_FOR_PAYMENT);
 
 		order.addOrderItem(OrderItem.of(order, product, orderRequest.getQuantity(),
@@ -85,20 +92,20 @@ public class OrderService {
 		return orderRepository.save(order).getId();
 	}
 
-	private Address getAddress(Long userId, BaseOrder orderRequest) {
+	private Address getAddress(Long userId, String deliveryAddress, boolean defaultAddress) {
 		User user = userRepository.getById(userId);
 		Optional<Address> optionalAddress = addressRepository.findByUser_IdAndDefaultAddress(
 			userId, true);
 
 		// 기본 배송지 주소 반환
-		if (isDefaultAddress(optionalAddress, orderRequest)) {
+		if (isDefaultAddress(optionalAddress, deliveryAddress)) {
 			return optionalAddress.get();
 		}
 		//새로운 주소가 기본 배송지로 설정된 경우
-		if (isAddressUpdateRequire(optionalAddress, orderRequest)) {
+		if (isAddressUpdateRequire(optionalAddress, defaultAddress)) {
 			updateDefaultAddress(optionalAddress);
 		}
-		Address address = Address.of(user, orderRequest.getDeliveryAddress(), orderRequest.isDefaultAddress());
+		Address address = Address.of(user, deliveryAddress, defaultAddress);
 
 		return addressRepository.save(address);
 	}
@@ -113,15 +120,22 @@ public class OrderService {
 			.toList();
 	}
 
-	private boolean isDefaultAddress(Optional<Address> optionalAddress, BaseOrder orderRequest) {
-		return optionalAddress.isPresent() && orderRequest.getDeliveryAddress() == null;
+	private boolean isDefaultAddress(Optional<Address> optionalAddress, String deliveryAddress) {
+		return optionalAddress.isPresent() && deliveryAddress == null;
 	}
 
-	private boolean isAddressUpdateRequire(Optional<Address> optionalAddress, BaseOrder orderRequest) {
-		return orderRequest.isDefaultAddress() && optionalAddress.isPresent();
+	private boolean isAddressUpdateRequire(Optional<Address> optionalAddress, boolean isDefaultAddress) {
+		return isDefaultAddress && optionalAddress.isPresent();
 	}
 
 	private void updateDefaultAddress(Optional<Address> optionalAddress) {
 		optionalAddress.ifPresent(address -> address.changeDefaultAddress(false));
+	}
+
+	private String createOrderName(String productName, int OrderRequestListSize) {
+		if (OrderRequestListSize > 1) {
+			return productName + " 외 " + OrderRequestListSize + "개";
+		}
+		return productName;
 	}
 }

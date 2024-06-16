@@ -24,10 +24,10 @@
     button.addEventListener('click', function () {
         // ------ 결제창 띄우기 ------
         tossPayments.requestPayment('CARD', {
-            amount: 1000,
-            orderId: 'a9666e69-3696-47f9-a6ca-8c9e48ba1f1e', // 자동으로 증가된 orderId 대신 고유한 orderId로 보내줌
+            amount: 50000,
+            orderId: 'e57edabf-4f79-4768-a176-96a70f1d3f91', // 자동으로 증가된 orderId 대신 고유한 orderId로 보내줌
             orderName: '바나나',
-            customerName: '첫번째',
+            customerName: 'twosome',
             customerEmail: 'test2@abc.com',
             successUrl: 'http://localhost:8080/api/v1/payments/toss/success',
             failUrl: 'http://localhost:8080/api/v1/payments/toss/fail'

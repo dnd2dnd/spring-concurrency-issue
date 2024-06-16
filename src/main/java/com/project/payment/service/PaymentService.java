@@ -71,12 +71,13 @@ public class PaymentService {
 		Payment payment = verifyPayment(orderId, amount);
 		ResponseEntity<PaymentSuccessDto> result = requestPaymentAccept(paymentKey, orderId, amount);
 		Order order = orderRepository.findById(payment.getOrderId());
-		log.info(payment.getOrderName());
+
 		payment.setPaymentKey(paymentKey); // 결제 성공시 redirect로 받는 paymentKey 저장
 		payment.setPaySuccessYN(true); // 결제 성공 -> PaySuccess값 true로 설정
 		Order.updateOrderStatus(order, PAYMENT_COMPLETED);
 		paymentRepository.save(payment);
 
+		//TODO 상품 판매된 수량 업데이트
 		return result;
 	}
 
