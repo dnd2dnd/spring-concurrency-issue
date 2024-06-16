@@ -7,6 +7,8 @@ import java.security.InvalidParameterException;
 
 import com.project.cart.exception.ProductQuantityExceededException;
 
+import com.project.product.domain.Product;
+import com.project.product.domain.Stock;
 import lombok.Getter;
 
 @Getter
@@ -23,11 +25,12 @@ public class CartProduct implements Serializable {
 		this.quantity = quantity;
 	}
 
-	public static CartProduct of(Long productId, int stock, int sales, Integer quantity) {
-		int leftQuantity = stock - sales;
+	public static CartProduct of(Product product, Integer quantity) {
+        Stock stock = product.getStock();
+		int leftQuantity = stock.getTotalQuantity() - stock.getSalesQuantity();
 		validatePositive(quantity);
 		validateProductAmount(leftQuantity, quantity);
-		return new CartProduct(productId, leftQuantity, sales, quantity);
+		return new CartProduct(product.getId(), leftQuantity, stock.getSalesQuantity(), quantity);
 	}
 
 	private static void validatePositive(int quantity) {
@@ -42,7 +45,4 @@ public class CartProduct implements Serializable {
 		}
 	}
 
-	public CartProduct calculate(Integer value) {
-		return CartProduct.of(productId, stock, sales, value);
-	}
 }

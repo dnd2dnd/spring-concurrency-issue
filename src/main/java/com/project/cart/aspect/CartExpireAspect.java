@@ -26,7 +26,7 @@ public class CartExpireAspect {
 		this.timeUnit = TimeUnit.valueOf(cartRedisProperty.getTimeUnit());
 	}
 
-	@Around("execution(* com.project.cart.service.CartRedisUtil..*(..)) && args(key, ..)")
+	@Around("execution(* com.project.cart.service.CartService..*(..)) && args(key, ..)")
 	public Object executeExpireByBasket(ProceedingJoinPoint joinPoint, Long key) throws Throwable {
 		cartRedis.expireValues(key, timeout, timeUnit);
 		Object result = joinPoint.proceed();
