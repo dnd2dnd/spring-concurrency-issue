@@ -14,6 +14,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.project.order.dto.request.CartOrderRequest;
 import com.project.order.dto.request.OrderRequest;
+import com.project.order.dto.request.OrderRequestWrapper;
 import com.project.order.dto.response.OrderResponse;
 import com.project.order.service.OrderService;
 
@@ -41,11 +42,14 @@ public class OrderController {
 	}
 
 	@PostMapping("/cart")
-	public ResponseEntity<Void> createBasketOrder(
+	public ResponseEntity<Void> createCartOrder(
 		@RequestParam Long userId,
-		@Valid @RequestBody List<CartOrderRequest> cartOrderRequestList
+		@Valid @RequestBody OrderRequestWrapper orderRequestWrapper
 	) {
-		orderService.createBasketOrder(userId, cartOrderRequestList);
+		String deliveryAddress = orderRequestWrapper.getDeliveryAddress();
+		boolean defaultAddress = orderRequestWrapper.isDefaultAddress();
+		List<CartOrderRequest> items = orderRequestWrapper.getCartOrderRequestList();
+		orderService.createCartOrder(userId, deliveryAddress, defaultAddress, items);
 		return ResponseEntity.ok().build();
 	}
 

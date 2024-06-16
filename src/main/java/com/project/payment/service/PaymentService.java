@@ -20,6 +20,8 @@ import org.springframework.web.client.RestTemplate;
 
 import com.project.common.config.TossPaymentConfig;
 import com.project.order.domain.Order;
+import com.project.order.domain.OrderItem;
+import com.project.order.repository.OrderItemRepository;
 import com.project.order.repository.OrderRepository;
 import com.project.payment.domain.CanclePayment;
 import com.project.payment.domain.Payment;
@@ -47,6 +49,7 @@ public class PaymentService {
 	private final TossPaymentConfig tossPaymentConfig;
 	private final OrderRepository orderRepository;
 	private final CanclePaymentRepository canclePaymentRepository;
+	private final OrderItemRepository orderItemRepository;
 
 	//토스 결제 요청
 	public PaymentResponseDto requestTossPayment(Long userId, PaymentRequestDto paymentRequestDto) {
@@ -71,12 +74,14 @@ public class PaymentService {
 		Payment payment = verifyPayment(orderId, amount);
 		ResponseEntity<PaymentSuccessDto> result = requestPaymentAccept(paymentKey, orderId, amount);
 		Order order = orderRepository.findById(payment.getOrderId());
-		log.info(payment.getOrderName());
+		OrderItem orderItem = orderItemRepository.findByOrder_Id(orderId);
+
 		payment.setPaymentKey(paymentKey); // 결제 성공시 redirect로 받는 paymentKey 저장
 		payment.setPaySuccessYN(true); // 결제 성공 -> PaySuccess값 true로 설정
 		Order.updateOrderStatus(order, PAYMENT_COMPLETED);
 		paymentRepository.save(payment);
 
+		orderItem.getProduct().getStock().increase(orderItem.getQuantity());
 		return result;
 	}
 

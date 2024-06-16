@@ -6,9 +6,9 @@ import java.io.Serializable;
 import java.security.InvalidParameterException;
 
 import com.project.cart.exception.ProductQuantityExceededException;
-
 import com.project.product.domain.Product;
 import com.project.product.domain.Stock;
+
 import lombok.Getter;
 
 @Getter
@@ -26,7 +26,7 @@ public class CartProduct implements Serializable {
 	}
 
 	public static CartProduct of(Product product, Integer quantity) {
-        Stock stock = product.getStock();
+		Stock stock = product.getStock();
 		int leftQuantity = stock.getTotalQuantity() - stock.getSalesQuantity();
 		validatePositive(quantity);
 		validateProductAmount(leftQuantity, quantity);
@@ -44,5 +44,4 @@ public class CartProduct implements Serializable {
 			throw new ProductQuantityExceededException();
 		}
 	}
-
 }
