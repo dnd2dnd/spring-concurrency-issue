@@ -120,8 +120,5 @@ public class Product implements Serializable {
 	public void updateStock(int stock) {
 		this.stock.updateStock(stock);
 	}
-
-	public void increase() {
-		stock.increase();
-	}
+	
 }

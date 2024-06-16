@@ -44,5 +44,4 @@ public class CartProduct implements Serializable {
 			throw new ProductQuantityExceededException();
 		}
 	}
-
 }

@@ -49,9 +49,9 @@ public class Stock implements Serializable {
 		this.totalQuantity += quantity;
 	}
 
-	public void increase() {
+	public void increase(int salesQuantity) {
 		validateStock();
-		salesQuantity++;
+		this.salesQuantity += salesQuantity;
 	}
 
 	public void validateStock() {
