@@ -24,7 +24,7 @@ public class Stock implements Serializable {
 
 	private Stock(Integer totalQuantity) {
 		this.totalQuantity = totalQuantity;
-		this.salesQuantity = totalQuantity;
+		this.salesQuantity = 0;
 	}
 
 	public static Stock from(Integer totalQuantity) {
