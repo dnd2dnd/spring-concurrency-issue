@@ -16,6 +16,7 @@ import com.project.user.domain.User;
 import com.project.user.dto.request.SignInRequest;
 import com.project.user.dto.request.SignUpRequest;
 import com.project.user.dto.response.TokenResponse;
+import com.project.user.repository.AddressRepository;
 import com.project.user.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -27,6 +28,29 @@ public class UserService implements LoginService {
 	private final PasswordEncoder passwordEncoder;
 	private final JWTProvider jwtProvider;
 	private final UserRepository userRepository;
+	private final AddressRepository addressRepository;
+
+	// @PostConstruct
+	// public void init() {
+	// 	for (int i = 1; i <= 100; i++) {
+	// 		String email = "user" + i + "@example.com";
+	// 		String nickname = "user" + i;
+	// 		String password = "P!assw!!" + i;
+	// 		User user = User.of(email, nickname, password, passwordEncoder);
+	// 		userRepository.save(user);
+	// 	}
+	// }
+
+	// @PostConstruct
+	// public void init() {
+	// 	for (int i = 1; i <= 100; i++) {
+	// 		User user = userRepository.getById((long)i);
+	// 		String address = "user" + i;
+	// 		boolean defaultAddress = true;
+	// 		Address address1 = Address.of(user, address, defaultAddress);
+	// 		addressRepository.save(address1);
+	// 	}
+	// }
 
 	@Override
 	public TokenResponse signIn(SignInRequest signInRequest) {

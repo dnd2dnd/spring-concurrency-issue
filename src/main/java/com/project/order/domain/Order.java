@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.project.common.BaseTime;
+import com.project.payment.domain.PaymentStatus;
 import com.project.user.domain.Address;
 import com.project.user.domain.User;
 
@@ -60,14 +61,18 @@ public class Order extends BaseTime {
 	@Enumerated(EnumType.STRING)
 	OrderStatus orderStatus;
 
-	private Order(User user, Address address, OrderStatus orderStatus) {
+	@Enumerated(EnumType.STRING)
+	PaymentStatus paymentStatus;
+
+	private Order(User user, Address address, OrderStatus orderStatus, PaymentStatus paymentStatus) {
 		this.user = user;
 		this.address = address;
 		this.orderStatus = orderStatus;
+		this.paymentStatus = paymentStatus;
 	}
 
-	public static Order of(User user, Address address, OrderStatus orderStatus) {
-		return new Order(user, address, orderStatus);
+	public static Order of(User user, Address address, OrderStatus orderStatus, PaymentStatus paymentStatus) {
+		return new Order(user, address, orderStatus, paymentStatus);
 	}
 
 	public void addOrderItem(OrderItem orderItem) {
@@ -83,4 +88,7 @@ public class Order extends BaseTime {
 		order.orderStatus = orderStatus;
 	}
 
+	public static void updatePaymentStatus(Order order, PaymentStatus paymentStatus) {
+		order.paymentStatus = paymentStatus;
+	}
 }

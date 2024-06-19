@@ -29,10 +29,9 @@ public class OrderController {
 
 	@PostMapping
 	public ResponseEntity<Void> createOrder(
-		@RequestParam Long userId,
 		@Valid @RequestBody OrderRequest orderRequest
 	) {
-		String id = orderService.createOrder(userId, orderRequest);
+		String id = orderService.createOrder(orderRequest);
 		URI uri = ServletUriComponentsBuilder.fromCurrentContextPath()
 			.path("/{id}")
 			.buildAndExpand(id).toUri();

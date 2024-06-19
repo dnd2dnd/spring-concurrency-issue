@@ -17,6 +17,7 @@ import com.project.order.dto.request.OrderRequest;
 import com.project.order.dto.response.OrderResponse;
 import com.project.order.exception.InsufficientProductStockException;
 import com.project.order.repository.OrderRepository;
+import com.project.payment.domain.PaymentStatus;
 import com.project.product.domain.Price;
 import com.project.product.domain.Product;
 import com.project.product.repository.ProductRepository;
@@ -30,7 +31,6 @@ import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 @Slf4j
 public class OrderService {
 	private final OrderRepository orderRepository;
@@ -39,13 +39,14 @@ public class OrderService {
 	private final ProductRepository productRepository;
 	private final CartRedis cartRedis;
 
+	@Transactional
 	public void createCartOrder(Long userId, String deliveryAddress, boolean defaultAddress,
 		List<CartOrderRequest> cartOrderRequestList) {
 		User user = userRepository.getById(userId);
 		Address address = getAddress(userId, deliveryAddress, defaultAddress);
 		HashOperations<Long, Long, CartProduct> hashOperations = cartRedis.getHashOperations();
 
-		Order order = Order.of(user, address, OrderStatus.WAITING_FOR_PAYMENT);
+		Order order = Order.of(user, address, OrderStatus.ORDER_COMPLETE, PaymentStatus.PAY_STANDBY);
 
 		Long firstProductId = cartOrderRequestList.get(0).getProductId();
 		Product firstProduct = productRepository.getById(firstProductId);
@@ -68,27 +69,38 @@ public class OrderService {
 			order.addOrderItem(orderItem);
 			// 장바구니에서 상품 삭제
 			hashOperations.delete(userId, productId);
+			//TODO 임시 테스트용
+			orderItem.getProduct().getStock().increase(orderItem.getQuantity());
 		}
 		String orderName = createOrderName(firstProductName, cartOrderRequestList.size());
 		order.addOrderName(orderName);
+
 		orderRepository.save(order);
 	}
 
-	public String createOrder(Long userId, OrderRequest orderRequest) {
-		User user = userRepository.getById(userId);
+	@Transactional
+	public String createOrder(OrderRequest orderRequest) {
+		User user = userRepository.getById(orderRequest.getUserId());
 		Product product = productRepository.getById(orderRequest.getProductId());
 		String orderName = product.getName();
 
-		Address address = getAddress(userId, orderRequest.getDeliveryAddress(), orderRequest.isDefaultAddress());
+		Address address = getAddress(orderRequest.getUserId(), orderRequest.getDeliveryAddress(),
+			orderRequest.isDefaultAddress());
 		int productQuantity = product.getTotalQuantity() - product.getSalesQuantity();
 		if (productQuantity < orderRequest.getQuantity()) {
 			throw new InsufficientProductStockException();
 		}
-		Order order = Order.of(user, address, OrderStatus.WAITING_FOR_PAYMENT);
 
-		order.addOrderItem(OrderItem.of(order, product, orderRequest.getQuantity(),
-			Price.calculatePrice(product.getPrice(), orderRequest.getQuantity())));
+		Order order = Order.of(user, address, OrderStatus.ORDER_COMPLETE, PaymentStatus.PAY_STANDBY);
+
+		OrderItem orderItem = OrderItem.of(order, product, orderRequest.getQuantity(),
+			Price.calculatePrice(product.getPrice(), orderRequest.getQuantity()));
+
+		order.addOrderItem(orderItem);
 		order.addOrderName(orderName);
+
+		product.getStock().increase(orderItem.getQuantity());
+
 		return orderRepository.save(order).getId();
 	}
 

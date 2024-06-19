@@ -1,7 +1,5 @@
 package com.project.payment.service;
 
-import static com.project.order.domain.OrderStatus.*;
-
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
@@ -25,6 +23,7 @@ import com.project.order.repository.OrderItemRepository;
 import com.project.order.repository.OrderRepository;
 import com.project.payment.domain.CanclePayment;
 import com.project.payment.domain.Payment;
+import com.project.payment.domain.PaymentStatus;
 import com.project.payment.dto.request.PaymentRequestDto;
 import com.project.payment.dto.response.CanclePaymentDto;
 import com.project.payment.dto.response.PaymentResponseDto;
@@ -78,7 +77,7 @@ public class PaymentService {
 
 		payment.setPaymentKey(paymentKey); // 결제 성공시 redirect로 받는 paymentKey 저장
 		payment.setPaySuccessYN(true); // 결제 성공 -> PaySuccess값 true로 설정
-		Order.updateOrderStatus(order, PAYMENT_COMPLETED);
+		Order.updatePaymentStatus(order, PaymentStatus.PAY_COMPLETE);
 		paymentRepository.save(payment);
 
 		orderItem.getProduct().getStock().increase(orderItem.getQuantity());
@@ -168,7 +167,7 @@ public class PaymentService {
 		canclePaymentRepository.save(canclePayment);
 		paymentRepository.delete(payment);
 		CanclePaymentDto result = cancelPayment(canclePayment, paymentKey, cancleReason);
-		Order.updateOrderStatus(order, CANCELLED);
+		Order.updatePaymentStatus(order, PaymentStatus.PAY_CANCEL);
 
 		return result;
 	}
