@@ -10,7 +10,10 @@ import lombok.Getter;
 
 @Getter
 public class OrderRequest extends BaseOrder {
-	
+
+	@Schema(description = "유저 아이", example = "1")
+	private Long userId;
+
 	@Schema(description = "상품 번호", example = "1")
 	private Long productId;
 	@Schema(description = "수량", example = "2")
